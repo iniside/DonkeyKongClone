@@ -39,6 +39,8 @@ ADonkeyKongCharacter::ADonkeyKongCharacter(const FObjectInitializer& ObjectIniti
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	bIsClimbing = false;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -50,6 +52,8 @@ void ADonkeyKongCharacter::SetupPlayerInputComponent(class UInputComponent* Inpu
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	InputComponent->BindAxis("MoveRight", this, &ADonkeyKongCharacter::MoveRight);
+	InputComponent->BindAxis("Climb", this, &ADonkeyKongCharacter::Climb);
+
 
 	InputComponent->BindTouch(IE_Pressed, this, &ADonkeyKongCharacter::TouchStarted);
 	InputComponent->BindTouch(IE_Released, this, &ADonkeyKongCharacter::TouchStopped);
@@ -58,7 +62,18 @@ void ADonkeyKongCharacter::SetupPlayerInputComponent(class UInputComponent* Inpu
 void ADonkeyKongCharacter::MoveRight(float Value)
 {
 	// add movement in that direction
-	AddMovementInput(FVector(0.f,-1.f,0.f), Value);
+	if (!bIsClimbing)
+	{
+		AddMovementInput(FVector(0.f, -1.f, 0.f), Value);
+	}
+}
+
+void ADonkeyKongCharacter::Climb(float Value)
+{
+	if (bIsClimbing)
+	{
+		AddMovementInput(FVector(0.f, 0.f, 1.f), Value);
+	}
 }
 
 void ADonkeyKongCharacter::TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location)

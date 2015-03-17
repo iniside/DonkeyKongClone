@@ -17,9 +17,13 @@ class ADonkeyKongCharacter : public ACharacter
 	class USpringArmComponent* CameraBoom;
 
 protected:
-
+	UPROPERTY(BlueprintReadWrite, Category = "Move State")
+		bool bIsClimbing;
+protected:
 	/** Called for side to side input */
 	void MoveRight(float Val);
+
+	void Climb(float Value);
 
 	/** Handle touch inputs. */
 	void TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location);
@@ -30,7 +34,6 @@ protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
-
 
 public:
 	ADonkeyKongCharacter(const FObjectInitializer& ObjectInitializer);

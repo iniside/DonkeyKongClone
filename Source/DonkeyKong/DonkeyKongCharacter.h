@@ -19,6 +19,11 @@ class ADonkeyKongCharacter : public ACharacter
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Move State")
 		bool bIsClimbing;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Climbing")
+		FVector ClimbDirection;
+
+	float ClimbingDirection;
 protected:
 	/** Called for side to side input */
 	void MoveRight(float Val);
@@ -42,4 +47,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
+	void Climb(const FVector& LeaveLedderLocation);
+
+	inline float GetClimbingDirection() { return ClimbingDirection; };
 };

@@ -13,28 +13,20 @@ class DONKEYKONG_API ADKLadder : public AActor
 		class USceneComponent* SceneRoot;
 	
 	/*
-		Where ladder begin. When button is pressed, trace against this volume, to check
-		if character can climb on ladder.
+		Volume which should encompass ladder.
 	*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
-		class UBoxComponent* LadderBegin;
+		class UBoxComponent* LadderVolume;
 	/*
-		Where ladder begin. When button is pressed, trace against this volume, to check
-		if character can climb on ladder.
+		Should be placed on surface next to ladder end. (like infront of ladder on roof).	
 	*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
 		class UBoxComponent* LadderEnd;
 	/*
-		While on ladder check for this, to see if we are safe to leave ladder.
+		Should be placed on surface next to ladder Begin. (like infront of ladder on floor).
 	*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
-		class UBoxComponent* LadderBeginDrop;
-	/*
-		While on ladder check for this, to see if we are safe to leave ladder.
-	*/
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
-		class UBoxComponent* LadderEndDrop;
-
+		class UBoxComponent* LadderBegin;
 public:	
 	// Sets default values for this actor's properties
 	ADKLadder();
@@ -56,42 +48,18 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Config")
 		FVector LadderVolumeExtens;
-	/*
-		When we finish climing, where character should be dropped ?
-	*/
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (MakeEditWidget = "true"), Category = "Config")
-		FVector DropLocationEnd;
-
-	/*
-		Location of begin volume.
-	*/
-	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"), Category = "Config")
-		FVector LadderBeginLocation;
-
-	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"), Category = "Config")
-		FVector LadderEndLocation;
 
 
-	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"), Category = "Config")
-		FVector LadderBeginDropLocation;
-
-	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"), Category = "Config")
-		FVector LadderEndDropLocation;
-
+	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"), Category = "Ladder")
+		FVector BeginLocation;
+	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"), Category = "Ladder")
+		FVector EndLocation;
 protected:
 	UFUNCTION()
-		void LadderBegin_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+		void LadderEnd_OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-		void LadderEnd_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-		void LadderEnd_LadderBeginDrop(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-		void LadderEnd_LadderEndDrop(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+		void LadderBegin_OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

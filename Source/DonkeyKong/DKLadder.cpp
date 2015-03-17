@@ -3,30 +3,28 @@
 #include "DonkeyKong.h"
 #include "DKLadder.h"
 #include "DonkeyKongCharacter.h"
+
+
 // Sets default values
 ADKLadder::ADKLadder()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
 	RootComponent = SceneRoot;
 
-	LadderBegin = CreateDefaultSubobject<UBoxComponent>(TEXT("LadderBegin"));
+	LadderVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("LadderVolume"));
+	LadderVolume->AttachTo(RootComponent);
+
 	LadderEnd = CreateDefaultSubobject<UBoxComponent>(TEXT("LadderEnd"));
+	LadderEnd->AttachTo(RootComponent);
 
+	LadderBegin = CreateDefaultSubobject<UBoxComponent>(TEXT("LadderBegin"));
+	LadderBegin->AttachTo(RootComponent);
 
-	LadderBeginDrop = CreateDefaultSubobject<UBoxComponent>(TEXT("LadderBeginDrop"));
-	LadderEndDrop = CreateDefaultSubobject<UBoxComponent>(TEXT("LadderEndDrop"));
-
-
-	LadderBeginLocation = FVector::ZeroVector;
-	LadderEndLocation = FVector::ZeroVector;
-
-	LadderBegin->OnComponentBeginOverlap.AddDynamic(this, &ADKLadder::LadderBegin_BeginOverlap);
-	LadderEnd->OnComponentBeginOverlap.AddDynamic(this, &ADKLadder::LadderEnd_BeginOverlap);
-
-	LadderBeginDrop->OnComponentBeginOverlap.AddDynamic(this, &ADKLadder::LadderEnd_LadderBeginDrop);
-	LadderEndDrop->OnComponentBeginOverlap.AddDynamic(this, &ADKLadder::LadderEnd_LadderEndDrop);
+	LadderEnd->OnComponentBeginOverlap.AddDynamic(this, &ADKLadder::LadderEnd_OnBeginOverlap);
+	LadderBegin->OnComponentBeginOverlap.AddDynamic(this, &ADKLadder::LadderBegin_OnBeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -46,51 +44,32 @@ void ADKLadder::Tick( float DeltaTime )
 void ADKLadder::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
-
-	LadderBegin->SetRelativeLocation(LadderBeginLocation);
-	LadderEnd->SetRelativeLocation(LadderEndLocation);
-
-	LadderBeginDrop->SetRelativeLocation(LadderBeginDropLocation);
-	LadderEndDrop->SetRelativeLocation(LadderEndDropLocation);
+	LadderBegin->SetRelativeLocation(BeginLocation);
+	LadderEnd->SetRelativeLocation(EndLocation);
 }
 
-
-
-void ADKLadder::LadderBegin_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+void ADKLadder::LadderEnd_OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
-	if (ADonkeyKongCharacter* DKChar = Cast<ADonkeyKongCharacter>(OtherActor))
+	if (ADonkeyKongCharacter* MyChar = Cast<ADonkeyKongCharacter>(OtherActor))
 	{
-		LadderBeginDrop->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		LadderEndDrop->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		if (MyChar->GetClimbingDirection() > 0)
+		{
+			FVector DropLocation = GetActorLocation() + EndLocation;
+			MyChar->Climb(DropLocation);
+		}
 	}
 }
 
-void ADKLadder::LadderEnd_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+void ADKLadder::LadderBegin_OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (ADonkeyKongCharacter* DKChar = Cast<ADonkeyKongCharacter>(OtherActor))
+	if (ADonkeyKongCharacter* MyChar = Cast<ADonkeyKongCharacter>(OtherActor))
 	{
-		LadderBeginDrop->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-		LadderEndDrop->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
-}
-
-void ADKLadder::LadderEnd_LadderBeginDrop(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (ADonkeyKongCharacter* DKChar = Cast<ADonkeyKongCharacter>(OtherActor))
-	{
-		LadderBegin->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	}
-}
-
-void ADKLadder::LadderEnd_LadderEndDrop(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (ADonkeyKongCharacter* DKChar = Cast<ADonkeyKongCharacter>(OtherActor))
-	{
-		LadderBegin->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		if (MyChar->GetClimbingDirection() < 0)
+		{
+			FVector DropLocation = GetActorLocation() + BeginLocation;
+			MyChar->Climb(DropLocation);
+		}
 	}
 }

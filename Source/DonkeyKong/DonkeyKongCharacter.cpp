@@ -41,6 +41,8 @@ ADonkeyKongCharacter::ADonkeyKongCharacter(const FObjectInitializer& ObjectIniti
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 
 	bIsClimbing = false;
+
+	ClimbingDirection = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -64,15 +66,19 @@ void ADonkeyKongCharacter::MoveRight(float Value)
 	// add movement in that direction
 	if (!bIsClimbing)
 	{
+		
 		AddMovementInput(FVector(0.f, -1.f, 0.f), Value);
 	}
 }
 
 void ADonkeyKongCharacter::Climb(float Value)
 {
+	ClimbingDirection = Value;
 	if (bIsClimbing)
 	{
-		AddMovementInput(FVector(0.f, 0.f, 1.f), Value);
+		FVector Move = ClimbDirection * Value;
+		AddActorLocalOffset(Move);
+		//AddMovementInput(FVector(0.f, 0.f, 1.f), Value);
 	}
 }
 
@@ -87,3 +93,9 @@ void ADonkeyKongCharacter::TouchStopped(const ETouchIndex::Type FingerIndex, con
 	StopJumping();
 }
 
+void ADonkeyKongCharacter::Climb(const FVector& LeaveLedderLocation)
+{
+	TeleportTo(LeaveLedderLocation, FRotator(0, 0, 0));
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	bIsClimbing = false;
+}

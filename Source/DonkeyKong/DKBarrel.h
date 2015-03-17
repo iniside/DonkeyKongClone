@@ -9,7 +9,45 @@ UCLASS()
 class DONKEYKONG_API ADKBarrel : public AActor
 {
 	GENERATED_BODY()
-	
+	/*
+		Base collision volume.
+	*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
+	class USphereComponent* Collision;
+	/*
+		Barrel mesh.
+	*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* Mesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
+	URotatingMovementComponent* RotMovement;
+private:
+	bool bMoveDirection;
+	bool bChangeDirection;
+protected:
+	/*
+		In which direction (and how far) from barrel we will check for floor.
+	*/
+	UPROPERTY(EditAnywhere, Category = "Config")
+		float TraceStartDistance;
+	/*
+		Direction and magnitude in which barrel will move on start.
+	*/
+	UPROPERTY(EditAnywhere, Category = "Config")
+		float Move;
+
+	/*
+		Mgnitude of how fast barrel will fall when reach end of floor;
+	*/
+	UPROPERTY(EditAnywhere, Category = "Config")
+		float Falling;
+	/*
+		Rotation rate (direction and magnitude).
+	*/
+	UPROPERTY(EditAnywhere, Category = "Config")
+		FRotator RotationRate;
+
 public:	
 	// Sets default values for this actor's properties
 	ADKBarrel();
@@ -21,5 +59,6 @@ public:
 	virtual void Tick( float DeltaSeconds ) override;
 
 	
-	
+protected:
+	bool GetFloor(FHitResult& out);
 };

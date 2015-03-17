@@ -3,10 +3,11 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "DKEnemy.h"
 #include "DKSimpleEnemy.generated.h"
 
 UCLASS()
-class DONKEYKONG_API ADKSimpleEnemy : public AActor
+class DONKEYKONG_API ADKSimpleEnemy : public ADKEnemy
 {
 	GENERATED_BODY()
 	

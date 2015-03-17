@@ -3,17 +3,16 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
-#include "DKEnemy.h"
-#include "DKSimpleSlidingEnemy.generated.h"
+#include "DKEnemy.generated.h"
 
 UCLASS()
-class DONKEYKONG_API ADKSimpleSlidingEnemy : public ADKEnemy
+class DONKEYKONG_API ADKEnemy : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ADKSimpleSlidingEnemy();
+	ADKEnemy();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

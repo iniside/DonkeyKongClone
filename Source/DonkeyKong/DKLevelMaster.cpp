@@ -33,5 +33,15 @@ void ADKLevelMaster::Tick( float DeltaTime )
 
 void ADKLevelMaster::SubtractScore()
 {
+	StartingScore = StartingScore - SubtractionAmount;
+	if (StartingScore <= 0)
+	{
+		GetWorldTimerManager().ClearTimer(ScoreSubtractionTimeHandle);
+		StartingScore = 0;
+	}
+}
 
+void ADKLevelMaster::AddBonusScore(int32 ScoreIn)
+{
+	LevelBonusScore += ScoreIn;
 }

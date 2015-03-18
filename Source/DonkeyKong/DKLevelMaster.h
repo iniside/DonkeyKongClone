@@ -24,6 +24,8 @@ protected:
 	/*
 		Total score accumulated between levels
 		At the and of each level remaining of StartingScore is added.
+
+		@@TODO:: Remove it (or rather move to GameInstance).
 	*/
 	UPROPERTY(BlueprintReadWrite, Category = "Score")
 		int32 TotalScore;
@@ -31,12 +33,12 @@ protected:
 		Base score we have when level start. It's subtracted
 		when player is on level, until level is beaten.
 	*/
-	UPROPERTY(BlueprintReadWrite, Category = "Score")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score")
 		int32 StartingScore;
 	/*
 		Current bonus score, from avoiding barrels, killing enemies etc.
 	*/
-	UPROPERTY(BlueprintReadWrite, Category = "Score")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Score")
 		int32 LevelBonusScore;
 	
 	/*
@@ -53,7 +55,12 @@ protected:
 private:
 	FTimerHandle ScoreSubtractionTimeHandle;
 
-
+public:
+	/*
+		Add bonus score.
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Score")
+		void AddBonusScore(int32 ScoreIn);
 protected:
 	UFUNCTION()
 	void SubtractScore();

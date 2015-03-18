@@ -124,6 +124,9 @@ void ADonkeyKongCharacter::ClimbFinish(const FVector& LeaveLedderLocation)
 void ADonkeyKongCharacter::EnemyDetection_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	//don't allow to score when player is on ladder.
+	if (bIsClimbing)
+		return;
  	if (ADKEnemy* Enemy = Cast<ADKEnemy>(OtherActor))
 	{
 		if (Enemy == LastEnemy)
@@ -132,6 +135,6 @@ void ADonkeyKongCharacter::EnemyDetection_BeginOverlap(class AActor* OtherActor,
 		LastEnemy = Enemy;
 
 		DKPC->AddScore(Enemy->GetActorLocation(), Enemy->GetScoreForJumping());
-		MasterLevel->AddBonusScore(Enemy->GetScoreForJumping());
+		//MasterLevel->AddBonusScore(Enemy->GetScoreForJumping());
 	}
 }

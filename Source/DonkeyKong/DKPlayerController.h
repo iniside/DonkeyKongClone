@@ -15,6 +15,9 @@ class DONKEYKONG_API ADKPlayerController : public APlayerController
 	
 public:
 	ADKPlayerController(const FObjectInitializer& ObjectInitializer);
+
+
+	virtual void BeginPlay() override;
 	/*
 		Add score to player per level and per session.
 	*/
@@ -25,4 +28,9 @@ public:
 	*/
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Score")
 		void OnScoreAdded(const FVector& TargetLocation, int32 Score);
+
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Base")
+	class ADonkeyKongGameMode* DKGameMode;
+
 };

@@ -27,4 +27,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
 		int32 ScoreForJumping;
 	
+
+public:
+	inline int32 GetScoreForJumping() { return ScoreForJumping; }
 };

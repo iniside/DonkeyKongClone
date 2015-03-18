@@ -1,6 +1,9 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 
 #include "DonkeyKong.h"
+#include "DKLevelMaster.h"
+#include "DKPlayerController.h"
+#include "DKEnemy.h"
 #include "DonkeyKongCharacter.h"
 
 ADonkeyKongCharacter::ADonkeyKongCharacter(const FObjectInitializer& ObjectInitializer)
@@ -43,6 +46,23 @@ ADonkeyKongCharacter::ADonkeyKongCharacter(const FObjectInitializer& ObjectIniti
 	bIsClimbing = false;
 
 	ClimbingDirection = 0;
+
+	EnemyDetection = CreateDefaultSubobject<UBoxComponent>(TEXT("EnemyDetection"));
+	EnemyDetection->AttachTo(RootComponent);
+	EnemyDetection->OnComponentBeginOverlap.AddDynamic(this, &ADonkeyKongCharacter::EnemyDetection_BeginOverlap);
+}
+
+void ADonkeyKongCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	for (auto It = TActorIterator<ADKLevelMaster>(GetWorld()); It; ++It)
+	{
+		MasterLevel = *It;
+		break;
+	}
+
+	DKPC = Cast<ADKPlayerController>(GetController());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -93,9 +113,25 @@ void ADonkeyKongCharacter::TouchStopped(const ETouchIndex::Type FingerIndex, con
 	StopJumping();
 }
 
-void ADonkeyKongCharacter::Climb(const FVector& LeaveLedderLocation)
+void ADonkeyKongCharacter::ClimbFinish(const FVector& LeaveLedderLocation)
 {
 	TeleportTo(LeaveLedderLocation, FRotator(0, 0, 0));
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	bIsClimbing = false;
+}
+
+
+void ADonkeyKongCharacter::EnemyDetection_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+ 	if (ADKEnemy* Enemy = Cast<ADKEnemy>(OtherActor))
+	{
+		if (Enemy == LastEnemy)
+			return;
+
+		LastEnemy = Enemy;
+
+		DKPC->AddScore(Enemy->GetActorLocation(), Enemy->GetScoreForJumping());
+		MasterLevel->AddBonusScore(Enemy->GetScoreForJumping());
+	}
 }

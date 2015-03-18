@@ -16,6 +16,9 @@ class ADonkeyKongCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UBoxComponent* EnemyDetection;
+
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Move State")
 		bool bIsClimbing;
@@ -24,7 +27,19 @@ protected:
 		FVector ClimbDirection;
 
 	float ClimbingDirection;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Level Master")
+	class ADKLevelMaster* MasterLevel;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Player Controller")
+	class ADKPlayerController* DKPC;
+
+	UPROPERTY()
+	class ADKEnemy* LastEnemy;
 protected:
+
+	virtual void BeginPlay() override;
+
 	/** Called for side to side input */
 	void MoveRight(float Val);
 
@@ -40,6 +55,10 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
 
+	UFUNCTION()
+	void EnemyDetection_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 public:
 	ADonkeyKongCharacter(const FObjectInitializer& ObjectInitializer);
 
@@ -48,7 +67,9 @@ public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
-	void Climb(const FVector& LeaveLedderLocation);
+	inline class ADKPlayerController* GetDKPC() const { return DKPC; };
+
+	void ClimbFinish(const FVector& LeaveLedderLocation);
 
 	inline float GetClimbingDirection() { return ClimbingDirection; };
 };

@@ -56,7 +56,7 @@ void ADKLadder::LadderEnd_OnBeginOverlap(class AActor* OtherActor, class UPrimit
 		if (MyChar->GetClimbingDirection() > 0)
 		{
 			FVector DropLocation = GetActorLocation() + EndLocation;
-			MyChar->Climb(DropLocation);
+			MyChar->ClimbFinish(DropLocation);
 		}
 	}
 }
@@ -69,7 +69,7 @@ void ADKLadder::LadderBegin_OnBeginOverlap(class AActor* OtherActor, class UPrim
 		if (MyChar->GetClimbingDirection() < 0)
 		{
 			FVector DropLocation = GetActorLocation() + BeginLocation;
-			MyChar->Climb(DropLocation);
+			MyChar->ClimbFinish(DropLocation);
 		}
 	}
 }

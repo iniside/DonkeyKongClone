@@ -4,6 +4,7 @@
 #include "DKLevelMaster.h"
 #include "DKPlayerController.h"
 #include "DKEnemy.h"
+#include "DonkeyKongGameMode.h"
 #include "DonkeyKongCharacter.h"
 
 ADonkeyKongCharacter::ADonkeyKongCharacter(const FObjectInitializer& ObjectInitializer)
@@ -50,6 +51,9 @@ ADonkeyKongCharacter::ADonkeyKongCharacter(const FObjectInitializer& ObjectIniti
 	EnemyDetection = CreateDefaultSubobject<UBoxComponent>(TEXT("EnemyDetection"));
 	EnemyDetection->AttachTo(RootComponent);
 	EnemyDetection->OnComponentBeginOverlap.AddDynamic(this, &ADonkeyKongCharacter::EnemyDetection_BeginOverlap);
+
+
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ADonkeyKongCharacter::Capsule_BeginOverlap);
 }
 
 void ADonkeyKongCharacter::BeginPlay()
@@ -63,6 +67,8 @@ void ADonkeyKongCharacter::BeginPlay()
 	}
 
 	DKPC = Cast<ADKPlayerController>(GetController());
+	
+	GameMode = Cast<ADonkeyKongGameMode>(GetWorld()->GetAuthGameMode());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -136,5 +142,14 @@ void ADonkeyKongCharacter::EnemyDetection_BeginOverlap(class AActor* OtherActor,
 
 		DKPC->AddScore(Enemy->GetActorLocation(), Enemy->GetScoreForJumping());
 		//MasterLevel->AddBonusScore(Enemy->GetScoreForJumping());
+	}
+}
+
+void ADonkeyKongCharacter::Capsule_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (ADKEnemy* Enemy = Cast<ADKEnemy>(OtherActor))
+	{
+		GameMode->PlayerDied(this);
 	}
 }

@@ -27,6 +27,11 @@ protected:
 	*/
 	UPROPERTY(EditAnywhere, Category = "Config")
 		float HowOftenSubtractScore;
+	/*
+		This level will be opened when player press Restart Button.
+	*/
+	UPROPERTY(EditAnywhere, Category = "Config")
+		FName FirstLevelName;
 
 	/*
 		How much score will be subtracted on each period.
@@ -37,10 +42,30 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Base")
 	class ADKLevelMaster* MasterLevel;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Base")
+	class UDKGameInstance* GameInstance;
+
 private:
 	FTimerHandle ScoreSubtractionTimeHandle;
 public:
 	void AddScore(int32 ScoreIn);
+
+	/*
+		Called when played die.
+	*/
+	void PlayerDied(class ADonkeyKongCharacter* CharacterIn);
+	/*
+		Called when played die.
+	*/
+	UFUNCTION(BlueprintImplementableEvent, Category = "Player")
+		void OnPlayerDied(class ADonkeyKongCharacter* CharacterIn);
+
+
+	UFUNCTION(BlueprintCallable, Category = "Player")
+		void RespawnPlayer(class ADonkeyKongCharacter* CharacterIn, class ADKPlayerController* PCIn);
+
+	UFUNCTION(BlueprintCallable, Category = "Player")
+		void Restart();
 
 protected:
 	UFUNCTION()

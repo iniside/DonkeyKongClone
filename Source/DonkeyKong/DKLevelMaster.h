@@ -4,7 +4,9 @@
 
 #include "GameFramework/Actor.h"
 #include "DKLevelMaster.generated.h"
-
+/*
+	Master actor to controll level specific behaviors.
+*/
 UCLASS()
 class DONKEYKONG_API ADKLevelMaster : public AActor
 {
@@ -28,4 +30,27 @@ public:
 	
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
+
+	virtual void OnConstruction(const FTransform& Transform) override;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+		FName NextLevelName;
+
+	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"), Category = "Config")
+		FVector EndLevelTriggetLocation;
+
+protected:
+	UFUNCTION()
+		void EndLevelTrigger_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+public:
+	/*
+		Called when player reaches end of current level.
+	*/
+	void EndLevel();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Level")
+		void OnEndLevel();
 };

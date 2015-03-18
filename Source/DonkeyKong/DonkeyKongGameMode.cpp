@@ -3,6 +3,9 @@
 #include "DonkeyKong.h"
 #include "DKLevelMaster.h"
 #include "DonkeyKongGameMode.h"
+#include "DKGameInstance.h"
+#include "DKPlayerController.h"
+#include "DKBarrel.h"
 #include "DonkeyKongCharacter.h"
 
 ADonkeyKongGameMode::ADonkeyKongGameMode(const FObjectInitializer& ObjectInitializer)
@@ -28,6 +31,8 @@ void ADonkeyKongGameMode::BeginPlay()
 		break;
 	}
 
+	GameInstance = Cast<UDKGameInstance>(GetGameInstance());
+
 	FTimerDelegate del = FTimerDelegate::CreateUObject(this, &ADonkeyKongGameMode::SubtractScore);
 
 	GetWorldTimerManager().SetTimer(ScoreSubtractionTimeHandle, del, HowOftenSubtractScore,
@@ -37,6 +42,13 @@ void ADonkeyKongGameMode::BeginPlay()
 void ADonkeyKongGameMode::AddScore(int32 ScoreIn)
 {
 	BonusLevelScore += ScoreIn;
+
+	GameInstance->AddScore(ScoreIn);
+}
+
+void ADonkeyKongGameMode::PlayerDied(class ADonkeyKongCharacter* CharacterIn)
+{
+	OnPlayerDied(CharacterIn);
 }
 
 void ADonkeyKongGameMode::SubtractScore()
@@ -47,4 +59,36 @@ void ADonkeyKongGameMode::SubtractScore()
 		GetWorldTimerManager().ClearTimer(ScoreSubtractionTimeHandle);
 		BaseLevelScore = 0;
 	}
+}
+
+void ADonkeyKongGameMode::RespawnPlayer(class ADonkeyKongCharacter* CharacterIn, 
+			class ADKPlayerController* PCIn)
+{
+	/*
+		Not enough lifes to respawn, probabaly should print something on screen.
+	*/
+	if (GameInstance->GetPlayerLifes() <= 0)
+		return;
+
+	if (!CharacterIn || !PCIn)
+		return;
+
+	AActor* PlayerStart = FindPlayerStart(PCIn);
+	if (!PlayerStart)
+		return;
+	GameInstance->SubtractPlayerLife();
+	GameInstance->SubtractScore(BonusLevelScore);
+	//CharacterIn->TeleportTo(PlayerStart->GetActorLocation(),FRotator(0,0,0));
+	RestartGame();
+	//reset scores to state before respawns (TODO! Check if this really worked this way!).
+	//
+	//BonusLevelScore = 0;
+
+	
+}
+
+void ADonkeyKongGameMode::Restart()
+{
+	GameInstance->ResetCurrentGame();
+	UGameplayStatics::OpenLevel(this, FirstLevelName);
 }

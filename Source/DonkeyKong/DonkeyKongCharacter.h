@@ -28,12 +28,14 @@ protected:
 
 	float ClimbingDirection;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Level Master")
+	UPROPERTY(BlueprintReadOnly, Category = "Base")
 	class ADKLevelMaster* MasterLevel;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Player Controller")
+	UPROPERTY(BlueprintReadOnly, Category = "Base")
 	class ADKPlayerController* DKPC;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Base")
+	class ADonkeyKongGameMode* GameMode;
 	UPROPERTY()
 	class ADKEnemy* LastEnemy;
 protected:
@@ -57,6 +59,10 @@ protected:
 
 	UFUNCTION()
 	void EnemyDetection_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void Capsule_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 public:

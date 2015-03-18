@@ -2,6 +2,7 @@
 
 #include "DonkeyKong.h"
 #include "DKGameInstance.h"
+#include "DonkeyKongCharacter.h"
 #include "DKLevelMaster.h"
 
 
@@ -17,6 +18,8 @@ ADKLevelMaster::ADKLevelMaster()
 
 	EndLevelTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("EndLevelTrigger"));
 	EndLevelTrigger->AttachTo(RootComponent);
+
+	EndLevelTrigger->OnComponentBeginOverlap.AddDynamic(this, &ADKLevelMaster::EndLevelTrigger_BeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -30,4 +33,22 @@ void ADKLevelMaster::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
+}
+
+void ADKLevelMaster::OnConstruction(const FTransform& Transform)
+{
+	EndLevelTrigger->SetRelativeLocation(EndLevelTriggetLocation);
+}
+
+void ADKLevelMaster::EndLevelTrigger_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (ADonkeyKongCharacter* MyChar = Cast<ADonkeyKongCharacter>(OtherActor))
+	{
+		EndLevel();
+	}
+}
+void ADKLevelMaster::EndLevel()
+{
+	OnEndLevel();
 }

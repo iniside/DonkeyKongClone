@@ -22,13 +22,11 @@ public:
 
 protected:
 	/*
-		Total score accumulated between levels
-		At the and of each level remaining of StartingScore is added.
-
-		@@TODO:: Remove it (or rather move to GameInstance).
+		Will we allow negative score (StartingScore can drop
+		below Zero if player stays to long in level).
 	*/
 	UPROPERTY(BlueprintReadWrite, Category = "Score")
-		int32 TotalScore;
+		bool bAllowNegativeScore;
 	/*
 		Base score we have when level start. It's subtracted
 		when player is on level, until level is beaten.

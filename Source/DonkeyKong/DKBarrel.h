@@ -3,10 +3,11 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "DKEnemy.h"
 #include "DKBarrel.generated.h"
 
 UCLASS()
-class DONKEYKONG_API ADKBarrel : public AActor
+class DONKEYKONG_API ADKBarrel : public ADKEnemy
 {
 	GENERATED_BODY()
 	/*
@@ -58,7 +59,7 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	
+	void MoveOnLadder();
 protected:
 	bool GetFloor(FHitResult& out);
 };

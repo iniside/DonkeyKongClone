@@ -20,6 +20,11 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	
+protected:
+	/*
+		Score which player will be awarded for successfully jumping over.
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
+		int32 ScoreForJumping;
 	
 };

@@ -81,6 +81,11 @@ void ADKBarrel::Tick( float DeltaTime )
 	AddActorWorldOffset(DeltaMovement);
 }
 
+void ADKBarrel::MoveOnLadder()
+{
+
+}
+
 bool ADKBarrel::GetFloor(FHitResult& out)
 {
 	FHitResult outResults;

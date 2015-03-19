@@ -137,10 +137,9 @@ void ADonkeyKongCharacter::EnemyDetection_BeginOverlap(class AActor* OtherActor,
 	{
 		if (Enemy == LastEnemy)
 			return;
-
 		LastEnemy = Enemy;
 
-		DKPC->AddScore(Enemy->GetActorLocation(), Enemy->GetScoreForJumping());
+		DKPC->AddScore(DKPC->NetPlayerIndex, Enemy->GetActorLocation(), Enemy->GetScoreForJumping());
 		//MasterLevel->AddBonusScore(Enemy->GetScoreForJumping());
 	}
 }

@@ -6,27 +6,36 @@
 UDKGameInstance::UDKGameInstance(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	StartingLifes = 3;
+	StartingLifes.Add(3); //player 1
+	StartingLifes.Add(3); //player 2
 	PlayerLifes = StartingLifes;
+
+	TotalGameScore.Add(0); //player 1
+	TotalGameScore.Add(0); //player 2
 }
 
-void UDKGameInstance::AddScore(int32 ScoreIn)
+void UDKGameInstance::AddScore(int32 PlayerIndex, int32 ScoreIn)
 {
-	TotalGameScore += ScoreIn;
+	TotalGameScore[PlayerIndex] += ScoreIn;
 }
 
-void UDKGameInstance::SubtractScore(int32 ScoreIn)
+void UDKGameInstance::SubtractScore(int32 PlayerIndex, int32 ScoreIn)
 {
-	TotalGameScore -= ScoreIn;
+	TotalGameScore[PlayerIndex] -= ScoreIn;
 }
 
-void UDKGameInstance::SubtractPlayerLife()
+void UDKGameInstance::SubtractPlayerLife(int32 PlayerIndex)
 {
-	PlayerLifes -= 1;
+	PlayerLifes[PlayerIndex] -= 1;
 }
 
 void UDKGameInstance::ResetCurrentGame()
 {
 	PlayerLifes = StartingLifes;
-	TotalGameScore = 0;
+	int32 scoreNum = TotalGameScore.Num();
+	for (int32 Index = 0; Index < scoreNum; Index++)
+	{
+		TotalGameScore[Index] = 0;
+	}
+	//TotalGameScore = 0;
 }

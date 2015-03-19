@@ -11,14 +11,10 @@
 ADonkeyKongGameMode::ADonkeyKongGameMode(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/SideScroller/Blueprints/SideScrollerCharacter"));
-	if (PlayerPawnBPClass.Class != NULL)
-	{
-		DefaultPawnClass = PlayerPawnBPClass.Class;
-	}
-
-	BaseLevelScore = 5000;
+	BaseLevelScore.Add(5000);//player 1
+	BaseLevelScore.Add(5000);//player 2
+	BonusLevelScore.Add(0);//player 1
+	BonusLevelScore.Add(0);//player 2
 }
 
 void ADonkeyKongGameMode::BeginPlay()
@@ -39,11 +35,11 @@ void ADonkeyKongGameMode::BeginPlay()
 		true, HowOftenSubtractScore);
 }
 
-void ADonkeyKongGameMode::AddScore(int32 ScoreIn)
+void ADonkeyKongGameMode::AddScore(int32 PlayerIndex, int32 ScoreIn)
 {
-	BonusLevelScore += ScoreIn;
+	BonusLevelScore[PlayerIndex] += ScoreIn;
 
-	GameInstance->AddScore(ScoreIn);
+	GameInstance->AddScore(PlayerIndex, ScoreIn);
 }
 
 void ADonkeyKongGameMode::PlayerDied(class ADonkeyKongCharacter* CharacterIn)
@@ -53,12 +49,24 @@ void ADonkeyKongGameMode::PlayerDied(class ADonkeyKongCharacter* CharacterIn)
 
 void ADonkeyKongGameMode::SubtractScore()
 {
-	BaseLevelScore = BaseLevelScore - SubtractionAmount;
-	if (BaseLevelScore <= 0)
+	//PlayerIndex = NumPlayers - 1;
+	for (int32 Player = 0; Player < NumPlayers; Player++)
 	{
-		GetWorldTimerManager().ClearTimer(ScoreSubtractionTimeHandle);
-		BaseLevelScore = 0;
+		BaseLevelScore[Player] = BaseLevelScore[Player] - SubtractionAmount;
+		if (BaseLevelScore[Player] <= 0)
+		{
+			GetWorldTimerManager().ClearTimer(ScoreSubtractionTimeHandle);
+			BaseLevelScore[Player] = 0;
+		}
 	}
+	//BaseLevelScore[0] = BaseLevelScore[0] - SubtractionAmount;
+	//BaseLevelScore[1] = BaseLevelScore[1] - SubtractionAmount;
+	//if (BaseLevelScore[0] <= 0)
+	//{
+	//	GetWorldTimerManager().ClearTimer(ScoreSubtractionTimeHandle);
+	//	BaseLevelScore[0] = 0;
+	//	BaseLevelScore[1] = 0;
+	//}
 }
 
 void ADonkeyKongGameMode::RespawnPlayer(class ADonkeyKongCharacter* CharacterIn, 
@@ -67,17 +75,20 @@ void ADonkeyKongGameMode::RespawnPlayer(class ADonkeyKongCharacter* CharacterIn,
 	/*
 		Not enough lifes to respawn, probabaly should print something on screen.
 	*/
-	if (GameInstance->GetPlayerLifes() <= 0)
-		return;
-
 	if (!CharacterIn || !PCIn)
+		return;
+	
+	int32 PlayerIndex = PCIn->NetPlayerIndex;
+	
+	if (GameInstance->GetPlayerLifes(PlayerIndex) <= 0)
 		return;
 
 	AActor* PlayerStart = FindPlayerStart(PCIn);
 	if (!PlayerStart)
 		return;
-	GameInstance->SubtractPlayerLife();
-	GameInstance->SubtractScore(BonusLevelScore);
+	
+	GameInstance->SubtractPlayerLife(PlayerIndex);
+	GameInstance->SubtractScore(PlayerIndex, BonusLevelScore[PlayerIndex]);
 	//CharacterIn->TeleportTo(PlayerStart->GetActorLocation(),FRotator(0,0,0));
 	RestartGame();
 	//reset scores to state before respawns (TODO! Check if this really worked this way!).
@@ -91,4 +102,13 @@ void ADonkeyKongGameMode::Restart()
 {
 	GameInstance->ResetCurrentGame();
 	UGameplayStatics::OpenLevel(this, FirstLevelName);
+}
+
+void ADonkeyKongGameMode::StartOnePlayer()
+{
+
+}
+void ADonkeyKongGameMode::StartTwoPlayers()
+{
+
 }

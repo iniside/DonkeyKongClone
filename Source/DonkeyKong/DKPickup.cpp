@@ -42,7 +42,8 @@ void ADKPickup::Collision_BeginOverlap(class AActor* OtherActor, class UPrimitiv
 {
 	if (ADonkeyKongCharacter* MyChar = Cast<ADonkeyKongCharacter>(OtherActor))
 	{
-		MyChar->GetDKPC()->AddScore(GetActorLocation(), ScoreAwarded);
+		int32 PlayerIndex = MyChar->GetDKPC()->NetPlayerIndex;
+		MyChar->GetDKPC()->AddScore(PlayerIndex, GetActorLocation(), ScoreAwarded);
 
 		Destroy();
 	}

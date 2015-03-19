@@ -14,13 +14,18 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
+	/*
+		Bonus score aquired by collecting pickup, killing enemies and avoiding enemies.
+
+		Index 0 - Player 1, Index 1 - Player 2.
+	*/
 	UPROPERTY(BlueprintReadOnly, Category = "Score")
-		int32 BonusLevelScore;
+		TArray<int32> BonusLevelScore;
 	/*
 		Base score for level, it's subtracted over time.
 	*/
 	UPROPERTY(BlueprintReadOnly, Category = "Score")
-		int32 BaseLevelScore;
+		TArray<int32> BaseLevelScore;
 
 	/*
 		Time in seconds, between score subtraction.
@@ -48,7 +53,7 @@ protected:
 private:
 	FTimerHandle ScoreSubtractionTimeHandle;
 public:
-	void AddScore(int32 ScoreIn);
+	void AddScore(int32 PlayerIndex, int32 ScoreIn);
 
 	/*
 		Called when played die.
@@ -67,6 +72,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Player")
 		void Restart();
 
+	UFUNCTION(BlueprintCallable, Category = "Player")
+		void StartOnePlayer();
+	UFUNCTION(BlueprintCallable, Category = "Player")
+		void StartTwoPlayers();
 protected:
 	UFUNCTION()
 		void SubtractScore();

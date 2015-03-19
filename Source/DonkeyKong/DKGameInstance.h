@@ -16,21 +16,21 @@ public:
 	UDKGameInstance(const FObjectInitializer& ObjectInitializer);
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Score")
-		int32 TotalGameScore;
+		TArray<int32> TotalGameScore;
 
 	UPROPERTY(EditAnywhere, Category = "Player")
-		int32 StartingLifes;
+		TArray<int32> StartingLifes;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Player")
-		int32 PlayerLifes;
+		TArray<int32> PlayerLifes;
 
 public:
-	void AddScore(int32 ScoreIn);
-	void SubtractScore(int32 ScoreIn);
+	void AddScore(int32 PlayerIndex, int32 ScoreIn);
+	void SubtractScore(int32 PlayerIndex, int32 ScoreIn);
 
-	void SubtractPlayerLife();
+	void SubtractPlayerLife(int32 PlayerIndex);
 
-	inline int32 GetPlayerLifes() { return PlayerLifes; }
+	inline int32 GetPlayerLifes(int32 PlayerIndex) { return PlayerLifes[PlayerIndex]; }
 
 	void ResetCurrentGame();
 };

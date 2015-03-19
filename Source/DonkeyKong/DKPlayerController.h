@@ -22,15 +22,20 @@ public:
 		Add score to player per level and per session.
 	*/
 	UFUNCTION(BlueprintCallable, Category = "Score")
-		virtual void AddScore(const FVector& TargetLocationIn, int32 ScoreIn);
+		virtual void AddScore(int32 PlayerIndex, const FVector& TargetLocationIn, int32 ScoreIn);
 	/*
 		Called when score is added to player.
 	*/
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Score")
-		void OnScoreAdded(const FVector& TargetLocation, int32 Score);
+		void OnScoreAdded(int32 PlayerIndex, const FVector& TargetLocation, int32 Score);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Base")
 	class ADonkeyKongGameMode* DKGameMode;
+
+
+	UPROPERTY(BlueprintReadOnly, Category = "Base")
+		int32 PlayerIndex;
+
 
 };

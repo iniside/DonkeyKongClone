@@ -18,9 +18,9 @@ void ADKPlayerController::BeginPlay()
 	DKGameMode = Cast<ADonkeyKongGameMode>(UGameplayStatics::GetGameMode(this));
 }
 
-void ADKPlayerController::AddScore(const FVector& TargetLocationIn, int32 ScoreIn)
+void ADKPlayerController::AddScore(int32 PlayerIndex, const FVector& TargetLocationIn, int32 ScoreIn)
 {
-	OnScoreAdded(TargetLocationIn, ScoreIn);
+	OnScoreAdded(PlayerIndex, TargetLocationIn, ScoreIn);
 
-	DKGameMode->AddScore(ScoreIn);
+	DKGameMode->AddScore(PlayerIndex, ScoreIn);
 }

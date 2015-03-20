@@ -1,28 +1,26 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "DonkeyKong.h"
-#include "DKEnemy.h"
+#include "../DonkeyKong.h"
+#include "DKSimpleSlidingEnemy.h"
 
 
 // Sets default values
-ADKEnemy::ADKEnemy()
+ADKSimpleSlidingEnemy::ADKSimpleSlidingEnemy()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	ScoreForJumping = 100;
-
 }
 
 // Called when the game starts or when spawned
-void ADKEnemy::BeginPlay()
+void ADKSimpleSlidingEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void ADKEnemy::Tick( float DeltaTime )
+void ADKSimpleSlidingEnemy::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 

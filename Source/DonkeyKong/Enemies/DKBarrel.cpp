@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "DonkeyKong.h"
+#include "../DonkeyKong.h"
+#include "../LevelSupport/DKLadder.h"
 #include "DKBarrel.h"
 
 
@@ -17,12 +18,17 @@ ADKBarrel::ADKBarrel()
 	Mesh->AttachTo(RootComponent);
 	RotMovement = CreateDefaultSubobject<URotatingMovementComponent>(TEXT("RotMovement"));
 
+	//Collision->OnComponentBeginOverlap.AddDynamic(this, &ADKBarrel::Collision_OnBeginOverlap);
+
 	bMoveDirection = true;
 	bChangeDirection = true;
+	bMovingOnLadder = false;
+
 	Move = 400;
 	TraceStartDistance = 40;
 	RotationRate = FRotator(0, 0, -180);
 	Falling = -300;
+	ChanceToMoveOnLadder = 0.7;
 }
 
 // Called when the game starts or when spawned
@@ -40,7 +46,7 @@ void ADKBarrel::Tick( float DeltaTime )
 	FVector DeltaMovement = FVector::ZeroVector;
 	
 	FHitResult hit;
-	if (GetFloor(hit))
+	if (GetFloor(hit) && !bMovingOnLadder)
 	{
 		if (bMoveDirection)
 		{
@@ -90,7 +96,7 @@ bool ADKBarrel::GetFloor(FHitResult& out)
 {
 	FHitResult outResults;
 	FVector StartLocation = GetActorLocation() + FVector(0, TraceStartDistance,0);
-	FVector EndLocation = StartLocation + (FVector(0, 0, -1) * 70);
+	FVector EndLocation = StartLocation + (FVector(0, 0, -1) * 100);
 
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
@@ -101,3 +107,16 @@ bool ADKBarrel::GetFloor(FHitResult& out)
 
 	return hit;
 }
+
+//void ADKBarrel::Collision_OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+//	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+//{
+//	if (ADKLadder* Ladder = Cast<ADKLadder>(OtherActor))
+//	{
+//		float chance = FMath::FRandRange(0, 1);
+//		if (chance > ChanceToMoveOnLadder)
+//			return;
+//
+//		bMovingOnLadder = true;
+//	}
+//}

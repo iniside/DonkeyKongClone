@@ -1,8 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "DonkeyKong.h"
-#include "DKGameInstance.h"
-#include "DonkeyKongCharacter.h"
+#include "../DKGameInstance.h"
+#include "../DonkeyKongCharacter.h"
+#include "../DKPlayerController.h"
 #include "DKLevelMaster.h"
 
 
@@ -20,12 +21,16 @@ ADKLevelMaster::ADKLevelMaster()
 	EndLevelTrigger->AttachTo(RootComponent);
 
 	EndLevelTrigger->OnComponentBeginOverlap.AddDynamic(this, &ADKLevelMaster::EndLevelTrigger_BeginOverlap);
+
+	OnCharacterRespawned.AddUObject(this, &ADKLevelMaster::CharacterRespawned);
 }
 
 // Called when the game starts or when spawned
 void ADKLevelMaster::BeginPlay()
 {
 	Super::BeginPlay();
+
+	
 }
 
 // Called every frame
@@ -48,6 +53,15 @@ void ADKLevelMaster::EndLevelTrigger_BeginOverlap(class AActor* OtherActor, clas
 		EndLevel();
 	}
 }
+
+void ADKLevelMaster::CharacterRespawned(class ADKPlayerController* PCIn)
+{
+	if (Camera)
+	{
+		PCIn->SetViewTargetWithBlend(Camera);
+	}
+}
+
 void ADKLevelMaster::EndLevel()
 {
 	OnEndLevel();

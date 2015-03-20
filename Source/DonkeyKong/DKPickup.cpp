@@ -3,6 +3,7 @@
 #include "DonkeyKong.h"
 #include "DonkeyKongCharacter.h"
 #include "DKPlayerController.h"
+#include "DKGameInstance.h"
 #include "DKPickup.h"
 
 
@@ -42,8 +43,8 @@ void ADKPickup::Collision_BeginOverlap(class AActor* OtherActor, class UPrimitiv
 {
 	if (ADonkeyKongCharacter* MyChar = Cast<ADonkeyKongCharacter>(OtherActor))
 	{
-		int32 PlayerIndex = MyChar->GetDKPC()->NetPlayerIndex;
-		MyChar->GetDKPC()->AddScore(PlayerIndex, GetActorLocation(), ScoreAwarded);
+		UDKGameInstance* GI = Cast<UDKGameInstance>(GetGameInstance());
+		MyChar->GetDKPC()->AddScore(GI->CurrentPlayerIndex, GetActorLocation(), ScoreAwarded);
 
 		Destroy();
 	}

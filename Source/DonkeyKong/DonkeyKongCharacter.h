@@ -8,14 +8,6 @@ class ADonkeyKongCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	/** Side view camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* SideViewCameraComponent;
-
-	/** Camera boom positioning the camera beside the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* EnemyDetection;
 
@@ -26,6 +18,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Climbing")
 		FVector ClimbDirection;
 
+	/* Current climbing direction on ladder. */
 	float ClimbingDirection;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Base")
@@ -36,46 +29,51 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Base")
 	class ADonkeyKongGameMode* GameMode;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Base")
+	class UDKGameInstance* GameInstance;
+
 	UPROPERTY()
 	class ADKEnemy* LastEnemy;
+
 protected:
-
+	/** AActor overrides BEIGN */
 	virtual void BeginPlay() override;
-
+	/* AActor overrides END **/
+	
 	/** Called for side to side input */
 	void MoveRight(float Val);
 
+	/* Called to climb over ladder */
 	void Climb(float Value);
-
-	/** Handle touch inputs. */
-	void TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location);
-
-	/** Handle touch stop event. */
-	void TouchStopped(const ETouchIndex::Type FingerIndex, const FVector Location);
 
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+	virtual void PossessedBy(AController* NewController) override;
 	// End of APawn interface
 
+	/* Triggered when we jump over any object derived from ADKEnemy class. */
 	UFUNCTION()
 	void EnemyDetection_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	/*
+		Triggered when capsule touch any object derived from ADKEnemy class.
 
+		Instant death.
+	*/
 	UFUNCTION()
 		void Capsule_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 public:
 	ADonkeyKongCharacter(const FObjectInitializer& ObjectInitializer);
 
-	/** Returns SideViewCameraComponent subobject **/
-	FORCEINLINE class UCameraComponent* GetSideViewCameraComponent() const { return SideViewCameraComponent; }
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-
 	inline class ADKPlayerController* GetDKPC() const { return DKPC; };
-
+	
+	/* Called when character reached end of ladder. */
 	void ClimbFinish(const FVector& LeaveLedderLocation);
 
+	/* Called when character died (obviously ?). */
+	void CharacterDied();
+	/* Get current climbing direction on ladder */
 	inline float GetClimbingDirection() { return ClimbingDirection; };
 };

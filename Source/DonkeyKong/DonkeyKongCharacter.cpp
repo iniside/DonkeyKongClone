@@ -1,10 +1,14 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 
 #include "DonkeyKong.h"
-#include "DKLevelMaster.h"
+
 #include "DKPlayerController.h"
-#include "DKEnemy.h"
 #include "DonkeyKongGameMode.h"
+#include "DKGameInstance.h"
+
+#include "LevelSupport/DKLevelMaster.h"
+#include "Enemies/DKEnemy.h"
+
 #include "DonkeyKongCharacter.h"
 
 ADonkeyKongCharacter::ADonkeyKongCharacter(const FObjectInitializer& ObjectInitializer)
@@ -17,19 +21,6 @@ ADonkeyKongCharacter::ADonkeyKongCharacter(const FObjectInitializer& ObjectIniti
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-
-	// Create a camera boom attached to the root (capsule)
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->AttachTo(RootComponent);
-	CameraBoom->bAbsoluteRotation = true; // Rotation of the character should not affect rotation of boom
-	CameraBoom->TargetArmLength = 500.f;
-	CameraBoom->SocketOffset = FVector(0.f,0.f,75.f);
-	CameraBoom->RelativeRotation = FRotator(0.f,180.f,0.f);
-
-	// Create a camera and attach to boom
-	SideViewCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("SideViewCamera"));
-	SideViewCameraComponent->AttachTo(CameraBoom, USpringArmComponent::SocketName);
-	SideViewCameraComponent->bUsePawnControlRotation = false; // We don't want the controller rotating the camera
 
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Face in the direction we are moving..
@@ -45,7 +36,6 @@ ADonkeyKongCharacter::ADonkeyKongCharacter(const FObjectInitializer& ObjectIniti
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 
 	bIsClimbing = false;
-
 	ClimbingDirection = 0;
 
 	EnemyDetection = CreateDefaultSubobject<UBoxComponent>(TEXT("EnemyDetection"));
@@ -66,9 +56,15 @@ void ADonkeyKongCharacter::BeginPlay()
 		break;
 	}
 
-	DKPC = Cast<ADKPlayerController>(GetController());
-	
+
 	GameMode = Cast<ADonkeyKongGameMode>(GetWorld()->GetAuthGameMode());
+	GameInstance = Cast<UDKGameInstance>(GetGameInstance());
+}
+
+void ADonkeyKongCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	DKPC = Cast<ADKPlayerController>(NewController);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -81,10 +77,6 @@ void ADonkeyKongCharacter::SetupPlayerInputComponent(class UInputComponent* Inpu
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	InputComponent->BindAxis("MoveRight", this, &ADonkeyKongCharacter::MoveRight);
 	InputComponent->BindAxis("Climb", this, &ADonkeyKongCharacter::Climb);
-
-
-	InputComponent->BindTouch(IE_Pressed, this, &ADonkeyKongCharacter::TouchStarted);
-	InputComponent->BindTouch(IE_Released, this, &ADonkeyKongCharacter::TouchStopped);
 }
 
 void ADonkeyKongCharacter::MoveRight(float Value)
@@ -92,7 +84,6 @@ void ADonkeyKongCharacter::MoveRight(float Value)
 	// add movement in that direction
 	if (!bIsClimbing)
 	{
-		
 		AddMovementInput(FVector(0.f, -1.f, 0.f), Value);
 	}
 }
@@ -104,20 +95,12 @@ void ADonkeyKongCharacter::Climb(float Value)
 	{
 		FVector Move = ClimbDirection * Value;
 		AddActorLocalOffset(Move);
-		//AddMovementInput(FVector(0.f, 0.f, 1.f), Value);
 	}
 }
 
-void ADonkeyKongCharacter::TouchStarted(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	// jump on any touch
-	Jump();
-}
+// Input
+//////////////////////////////////////////////////////////////////////////
 
-void ADonkeyKongCharacter::TouchStopped(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	StopJumping();
-}
 
 void ADonkeyKongCharacter::ClimbFinish(const FVector& LeaveLedderLocation)
 {
@@ -126,21 +109,22 @@ void ADonkeyKongCharacter::ClimbFinish(const FVector& LeaveLedderLocation)
 	bIsClimbing = false;
 }
 
-
 void ADonkeyKongCharacter::EnemyDetection_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//don't allow to score when player is on ladder.
-	if (bIsClimbing)
+	if (bIsClimbing || !DKPC)
 		return;
- 	if (ADKEnemy* Enemy = Cast<ADKEnemy>(OtherActor))
+
+	//we also need cooldown, for player scoring (I think?)
+	//to prevent player from constatly jumping over enemies and scoring.
+	//at least it seems to work this way.
+	if (ADKEnemy* Enemy = Cast<ADKEnemy>(OtherActor))
 	{
 		if (Enemy == LastEnemy)
 			return;
 		LastEnemy = Enemy;
-
-		DKPC->AddScore(DKPC->NetPlayerIndex, Enemy->GetActorLocation(), Enemy->GetScoreForJumping());
-		//MasterLevel->AddBonusScore(Enemy->GetScoreForJumping());
+		DKPC->AddScore(GameInstance->CurrentPlayerIndex, Enemy->GetActorLocation(), Enemy->GetScoreForJumping());
 	}
 }
 
@@ -149,6 +133,16 @@ void ADonkeyKongCharacter::Capsule_BeginOverlap(class AActor* OtherActor, class 
 {
 	if (ADKEnemy* Enemy = Cast<ADKEnemy>(OtherActor))
 	{
-		GameMode->PlayerDied(this);
+		CharacterDied();
 	}
+}
+
+void ADonkeyKongCharacter::CharacterDied()
+{
+	GameInstance->SubtractPlayerLife(GameInstance->CurrentPlayerIndex);
+
+	GameMode->PlayerDied(this);
+	DKPC->Spectate();
+
+	Destroy();
 }

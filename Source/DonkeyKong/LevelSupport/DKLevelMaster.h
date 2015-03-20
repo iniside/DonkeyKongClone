@@ -4,6 +4,8 @@
 
 #include "GameFramework/Actor.h"
 #include "DKLevelMaster.generated.h"
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FDKOnCharacterRespawned, class ADKPlayerController*);
 /*
 	Master actor to controll level specific behaviors.
 */
@@ -40,10 +42,17 @@ protected:
 	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"), Category = "Config")
 		FVector EndLevelTriggetLocation;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+		ACameraActor* Camera;
+public:
+	FDKOnCharacterRespawned OnCharacterRespawned;
 protected:
 	UFUNCTION()
 		void EndLevelTrigger_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void CharacterRespawned(class ADKPlayerController* PCIn);
 
 public:
 	/*

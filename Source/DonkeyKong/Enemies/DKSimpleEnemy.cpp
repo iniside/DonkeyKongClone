@@ -88,7 +88,7 @@ bool ADKSimpleEnemy::SearchForFloor(FHitResult& HitOut)
 	//but I'm not sure it would be really accurate.
 	//while movement is only in 2D, actor can still rotate in 3D, which might lead to undesirable results.
 	FVector StartTrace = GetActorLocation() + FVector(0, CurrentMoveDireaction, 0) * 100;
-	FVector EndTrace = (FVector(0, 0, -1) * 100) + StartTrace;
+	FVector EndTrace = (FVector(0, 0, -1) * 300) + StartTrace;
 
 	FHitResult Hit;
 	FCollisionQueryParams QueryParams;

@@ -16,14 +16,25 @@ class DONKEYKONG_API UDKGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 protected:
+
+	UPROPERTY(EditAnywhere, Category = "Debug")
+		bool bStartTwoPlayers;
+
 	/* With how many lifes players will start. */
-	UPROPERTY(EditAnywhere, Category = "Player")
-		TArray<int32> StartingLifes;
-	
+	UPROPERTY(EditAnywhere, Category = "Config")
+		int32 StartingLifes;
+
+	/* Name of starting level */
+	UPROPERTY(EditAnywhere, Category = "Config")
+		FName StartingLevel;
+
 	/* Current count of players lifes. */
 	UPROPERTY(BlueprintReadWrite, Category = "Player")
 		TArray<int32> PlayerLifes;
 
+	/* Level which player reached */
+	UPROPERTY(BlueprintReadWrite, Category = "Player")
+		TArray<FName> CurrentLevel;
 
 	////////////////////////
 	////Score
@@ -53,7 +64,10 @@ public:
 		int32 PlayerNumber;
 public:
 	UDKGameInstance(const FObjectInitializer& ObjectInitializer);
-
+	/** UGameInstance overrides - BEGIN */
+	virtual void Init() override;
+	/* UGameInstance overrides - END **/
+	
 	/* Adds score to current player. */
 	void AddScore(int32 PlayerIndex, int32 ScoreIn);
 	
@@ -78,4 +92,7 @@ public:
 	/* Starts game with two players */
 	UFUNCTION(BlueprintCallable, Category = "Player")
 		void StartTwoPlayers();
+
+	/* Called to create new game from either StartOnePlayer or StartTwoPlayers */
+	void CreateGame();
 };

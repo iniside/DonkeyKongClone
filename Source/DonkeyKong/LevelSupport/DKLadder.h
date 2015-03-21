@@ -24,9 +24,13 @@ class DONKEYKONG_API ADKLadder : public AActor
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
 		class UBoxComponent* LadderBegin;
 
-	/* Special volume, which tells objects of DKEnemy, that they can move over this ladder. */
+	/* Special volume, which tells objects of DKEnemy, that they can climb up ladder. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
-		class UBoxComponent* EnemyMoveVolume;
+		class UBoxComponent* EnemyClimbUpVolume;
+
+		/* Special volume, which tells objects of DKEnemy, that they can climb down ladder. */
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
+		class UBoxComponent* EnemyClimbDownVolume;
 
 public:	
 	// Sets default values for this actor's properties
@@ -56,9 +60,13 @@ protected:
 	/* Location of ladder end. Relative to actor. */
 	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"), Category = "Ladder")
 		FVector EndLocation;
-	/* Location of Enemy move volume. Relative to actor. */
+	/* Location of Enemy climb Up Relative to actor. */
 	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"), Category = "Ladder")
-		FVector EnemyMoveVolumeLocation;
+		FVector EnemyClimbUpVolumeLocation;
+
+	/* Location of Enemy climb Down. Relative to actor. */
+	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"), Category = "Ladder")
+		FVector EnemyClimbDownVolumeLocation;
 
 protected:
 	/* When player overlaps, character will be droped around location of LadderEnd volume. */
@@ -71,6 +79,10 @@ protected:
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-		void EnemyMoveVolume_OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+		void EnemyClimbUpVolume_OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void EnemyClimbDownVolume_OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

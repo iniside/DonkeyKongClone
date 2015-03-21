@@ -10,17 +10,8 @@ UCLASS()
 class DONKEYKONG_API ADKBarrel : public ADKEnemy
 {
 	GENERATED_BODY()
-	/*
-		Base collision volume.
-	*/
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
-	class USphereComponent* Collision;
-	/*
-		Barrel mesh.
-	*/
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* Mesh;
 
+protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ladder Volume", meta = (AllowPrivateAccess = "true"))
 	URotatingMovementComponent* RotMovement;
 private:
@@ -43,10 +34,6 @@ protected:
 	/* Rotation rate (direction and magnitude). */
 	UPROPERTY(EditAnywhere, Category = "Config")
 		FRotator RotationRate;
-
-	/* Chance that this barrel, will drop level on ladder. 0-never 1-always. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-		float ChanceToMoveOnLadder;
 public:	
 	// Sets default values for this actor's properties
 	ADKBarrel();
@@ -57,10 +44,13 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	void MoveOnLadder();
 	/* Get chance (0-1), in which barrel will move down on barrel. */
-	inline float GetChanceToMoveOnLadder() { return ChanceToMoveOnLadder; }
+	
 	inline void SetMovingOnLadder(bool ValueIn) { bMovingOnLadder = ValueIn; };
+
+	virtual void ClimbDown() override;
+
+	virtual void ClimbStop() override;
 protected:
 	/* Looks for floor, to which barrel can stick. */
 	bool GetFloor(FHitResult& out);

@@ -3,7 +3,10 @@
 #include "../DonkeyKong.h"
 #include "DKLadder.h"
 
+#include "../Enemies/DKEnemy.h"
 #include "../Enemies/DKBarrel.h"
+#include "../Enemies/DKSimpleEnemy.h"
+
 #include "DonkeyKongCharacter.h"
 
 
@@ -25,13 +28,17 @@ ADKLadder::ADKLadder()
 	LadderBegin = CreateDefaultSubobject<UBoxComponent>(TEXT("LadderBegin"));
 	LadderBegin->AttachTo(RootComponent);
 
-	EnemyMoveVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("EnemyMoveVolume"));
-	EnemyMoveVolume->AttachTo(RootComponent);
+	EnemyClimbUpVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("EnemyMoveVolume"));
+	EnemyClimbUpVolume->AttachTo(RootComponent);
+
+	EnemyClimbDownVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("EnemyClimbDownVolume"));
+	EnemyClimbDownVolume->AttachTo(RootComponent);
 
 	LadderEnd->OnComponentBeginOverlap.AddDynamic(this, &ADKLadder::LadderEnd_OnBeginOverlap);
 	LadderBegin->OnComponentBeginOverlap.AddDynamic(this, &ADKLadder::LadderBegin_OnBeginOverlap);
 
-	EnemyMoveVolume->OnComponentBeginOverlap.AddDynamic(this, &ADKLadder::EnemyMoveVolume_OnBeginOverlap);
+	EnemyClimbUpVolume->OnComponentBeginOverlap.AddDynamic(this, &ADKLadder::EnemyClimbUpVolume_OnBeginOverlap);
+	EnemyClimbDownVolume->OnComponentBeginOverlap.AddDynamic(this, &ADKLadder::EnemyClimbDownVolume_OnBeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -53,7 +60,8 @@ void ADKLadder::OnConstruction(const FTransform& Transform)
 	Super::OnConstruction(Transform);
 	LadderBegin->SetRelativeLocation(BeginLocation);
 	LadderEnd->SetRelativeLocation(EndLocation);
-	EnemyMoveVolume->SetRelativeLocation(EnemyMoveVolumeLocation);
+	EnemyClimbUpVolume->SetRelativeLocation(EnemyClimbUpVolumeLocation);
+	EnemyClimbDownVolume->SetRelativeLocation(EnemyClimbDownVolumeLocation);
 }
 
 void ADKLadder::LadderEnd_OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
@@ -66,6 +74,11 @@ void ADKLadder::LadderEnd_OnBeginOverlap(class AActor* OtherActor, class UPrimit
 			FVector DropLocation = GetActorLocation() + EndLocation;
 			MyChar->ClimbFinish(DropLocation);
 		}
+	}
+
+	if (ADKEnemy* Enemy = Cast<ADKEnemy>(OtherActor))
+	{
+		Enemy->ClimbStop();
 	}
 }
 
@@ -81,22 +94,36 @@ void ADKLadder::LadderBegin_OnBeginOverlap(class AActor* OtherActor, class UPrim
 		}
 	}
 
-	if (ADKBarrel* Barrel = Cast<ADKBarrel>(OtherActor))
+	if (ADKEnemy* Enemy = Cast<ADKEnemy>(OtherActor))
 	{
-		Barrel->SetMovingOnLadder(false);
+		Enemy->ClimbStop();
 	}
 }
 
-void ADKLadder::EnemyMoveVolume_OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+void ADKLadder::EnemyClimbUpVolume_OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (ADKBarrel* Barrel = Cast<ADKBarrel>(OtherActor))
+	if (ADKEnemy* Enemy = Cast<ADKEnemy>(OtherActor))
 	{
 		float chance = FMath::FRandRange(0, 1);
-		float test = Barrel->GetChanceToMoveOnLadder();
+		float test = Enemy->GetChanceToClimb();
 		if (chance > test)
 			return;
 
-		Barrel->SetMovingOnLadder(true);
+		Enemy->ClimbUp();
+	}
+}
+
+void ADKLadder::EnemyClimbDownVolume_OnBeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (ADKEnemy* Enemy = Cast<ADKEnemy>(OtherActor))
+	{
+		float chance = FMath::FRandRange(0, 1);
+		float test = Enemy->GetChanceToClimb();
+		if (chance > test)
+			return;
+
+		Enemy->ClimbDown();
 	}
 }

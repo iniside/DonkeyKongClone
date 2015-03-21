@@ -5,13 +5,42 @@
 #include "GameFramework/Actor.h"
 #include "DKEnemy.h"
 #include "DKSimpleEnemy.generated.h"
-
+/*
+	Simple enemy patrols platform, and move up-down ladder, but does not focus on player.
+	It just randomly moves around.
+*/
 UCLASS()
 class DONKEYKONG_API ADKSimpleEnemy : public ADKEnemy
 {
 	GENERATED_BODY()
+protected:
+	/* How fast enemy will move */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+		float MovementSpeed;
+
+	UPROPERTY(EditAnywhere, Category = "Config")
+		TArray<TEnumAsByte<ECollisionChannel> > FloorToTrace;
+
+	FCollisionObjectQueryParams FloorColiision;
+
+	/* Minimum distance in which enemy should search for next nav point */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+		float MinSearchDistance;
 	
-public:	
+	/* Maximum distance in which enemy should search for next nav point */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+		float MaxSearchDistance;
+private:
+	/* In which direction, I'm currently moving. */
+	float CurrentMoveDireaction;
+	/* Where I should go. */
+	FVector PointToMove;
+	/* -1 - down, 1 - up*/
+	float ClimbingDirection;
+	/* Am I currently climbing ? */
+	bool bIsClimbing;
+	
+public:
 	// Sets default values for this actor's properties
 	ADKSimpleEnemy();
 
@@ -21,6 +50,18 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	
-	
+	/* Searches for floor when moving on flat surface */
+	bool SearchForFloor(FHitResult& HitOut);
+
+	/* searches random point in front or back of enemy to move to. */
+	bool FindPointToMove(FHitResult& HitOut);
+
+	/* Call to tell enemy to climb up */
+	virtual void ClimbUp() override;
+
+	/* Call to tell enemey to climb down */
+	virtual void ClimbDown() override;
+
+	/* Call to tell enemy, to stop climbing */
+	virtual void ClimbStop() override;
 };

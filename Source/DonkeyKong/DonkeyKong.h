@@ -5,6 +5,10 @@
 
 #include "Engine.h"
 
+//save game.
+#include "DKSaveGame.h"
+#include "Kismet/GameplayStatics.h"
+
 #include "Runtime/UMG/Public/UMG.h"
 #include "Runtime/UMG/Public/UMGStyle.h"
 #include "Runtime/UMG/Public/Slate/SObjectWidget.h"

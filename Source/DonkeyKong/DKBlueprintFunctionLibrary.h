@@ -12,8 +12,10 @@ UCLASS()
 class DONKEYKONG_API UDKBlueprintFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
-	
-	
-	
-	
+public:
+	UFUNCTION(BlueprintCallable, Category = "Donkey Kong | Save Game")
+		static void SaveNewScoreToLadder(const FString& PlayerName, int32 Score);
+
+	UFUNCTION(BlueprintCallable, Category = "Donkey Kong | Save Game")
+		static void LoadNewScoreToLadder(const FString& PlayerName, int32 Score);
 };

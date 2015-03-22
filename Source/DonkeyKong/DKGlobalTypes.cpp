@@ -3,6 +3,4 @@
 #include "DonkeyKong.h"
 #include "DKGlobalTypes.h"
 
-
-
-
+const FSaveSlot FSaveSlotNames::LadderBoardSlot(FString(TEXT("LadderSlotSave")),0);

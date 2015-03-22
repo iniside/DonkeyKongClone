@@ -3,6 +3,8 @@
 #include "DonkeyKong.h"
 #include "DKSaveGame.h"
 
-
-
-
+UDKSaveGame::UDKSaveGame(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer)
+{
+	SaveSlotName = FSaveSlotNames::LadderBoardSlot.SlotName;
+}

@@ -4,6 +4,9 @@
 #include "../DKGameInstance.h"
 #include "../DonkeyKongCharacter.h"
 #include "../DKPlayerController.h"
+
+#include "../DonkeyKongGameMode.h"
+
 #include "DKLevelMaster.h"
 
 
@@ -64,5 +67,12 @@ void ADKLevelMaster::CharacterRespawned(class ADKPlayerController* PCIn)
 
 void ADKLevelMaster::EndLevel()
 {
-	OnEndLevel();
+	if (UDKGameInstance* GI = Cast<UDKGameInstance>(GetGameInstance()))
+	{
+		ADonkeyKongGameMode* GameMode = Cast<ADonkeyKongGameMode>(GetWorld()->GetAuthGameMode());
+		if (!GameMode)
+			return;
+		GI->AddScore(GameMode->GetLevelScore());
+		OnEndLevel();
+	}
 }

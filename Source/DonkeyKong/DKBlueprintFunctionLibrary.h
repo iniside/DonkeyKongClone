@@ -23,4 +23,16 @@ public:
 	/* Gets full ladderboard from save. */
 	UFUNCTION(BlueprintCallable, Category = "Donkey Kong | Save Game")
 		static TArray<FDKScoreLadder> LoadFullLadderBoard();
+
+	UFUNCTION(BlueprintCallable, Category = "Donkey Kong | Save Game")
+		static void SavePlayerOne(const FDKCharacterData& DataIn);
+
+	UFUNCTION(BlueprintCallable, Category = "Donkey Kong | Save Game")
+		static FDKCharacterData LoadPlayerOne();
+
+	UFUNCTION(BlueprintCallable, Category = "Donkey Kong | Save Game")
+		static void SavePlayerTwo(const FDKCharacterData& DataIn);
+
+	UFUNCTION(BlueprintCallable, Category = "Donkey Kong | Save Game")
+		static FDKCharacterData LoadPlayerTwo();
 };

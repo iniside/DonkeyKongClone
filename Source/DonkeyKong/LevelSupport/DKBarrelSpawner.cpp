@@ -45,11 +45,11 @@ void ADKBarrelSpawner::Reset()
 {
 	Super::Reset();
 
-	GetWorldTimerManager().ClearTimer(BarrelSpawnedTimerHandle);
-	//for (auto It = TActorIterator<ADKBarrel>(GetWorld()); It; ++It)
-	//{
-	//	It->Destroy();
-	//}
+	//GetWorldTimerManager().ClearTimer(BarrelSpawnedTimerHandle);
+	for (auto It = TActorIterator<ADKBarrel>(GetWorld()); It; ++It)
+	{
+		It->Destroy();
+	}
 }
 
 void ADKBarrelSpawner::SpawnNewBarrel()

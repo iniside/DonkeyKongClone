@@ -4,3 +4,7 @@
 #include "DKGlobalTypes.h"
 
 const FSaveSlot FSaveSlotNames::LadderBoardSlot(FString(TEXT("LadderSlotSave")),0);
+
+const FSaveSlot FSaveSlotNames::PlayerOneSlot(FString(TEXT("PlayerOne")), 1);
+
+const FSaveSlot FSaveSlotNames::PlayerTwoSlot(FString(TEXT("PlayerTwo")), 2);

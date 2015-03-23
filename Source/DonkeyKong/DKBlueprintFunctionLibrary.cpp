@@ -2,8 +2,8 @@
 
 #include "DonkeyKong.h"
 
-
 #include "DKSaveGame.h"
+#include "DKPlayerSave.h"
 
 #include "DKBlueprintFunctionLibrary.h"
 
@@ -54,4 +54,71 @@ TArray<FDKScoreLadder> UDKBlueprintFunctionLibrary::LoadFullLadderBoard()
 		return returnVal;
 	saveGame->LadderScore.Sort();
 	return saveGame->LadderScore;
+}
+
+void UDKBlueprintFunctionLibrary::SavePlayerOne(const FDKCharacterData& DataIn)
+{
+	UDKPlayerSave* saveGame = Cast<UDKPlayerSave>(UGameplayStatics::LoadGameFromSlot(FSaveSlotNames::PlayerOneSlot.SlotName,
+		FSaveSlotNames::PlayerOneSlot.UserIndex));
+	if (saveGame)
+	{
+		saveGame->CharacterData = DataIn;
+
+		UGameplayStatics::SaveGameToSlot(saveGame, FSaveSlotNames::PlayerOneSlot.SlotName,
+			FSaveSlotNames::PlayerOneSlot.UserIndex);
+	}
+	else
+	{
+		UDKPlayerSave* newSaveGame = Cast<UDKPlayerSave>(UGameplayStatics::CreateSaveGameObject(UDKPlayerSave::StaticClass()));
+		newSaveGame->CharacterData = DataIn;
+
+		UGameplayStatics::SaveGameToSlot(newSaveGame, FSaveSlotNames::PlayerOneSlot.SlotName,
+			FSaveSlotNames::PlayerOneSlot.UserIndex);
+	}
+}
+
+FDKCharacterData UDKBlueprintFunctionLibrary::LoadPlayerOne()
+{
+	FDKCharacterData returnData;
+	UDKPlayerSave* saveGame = Cast<UDKPlayerSave>(UGameplayStatics::LoadGameFromSlot(FSaveSlotNames::PlayerOneSlot.SlotName,
+		FSaveSlotNames::PlayerOneSlot.UserIndex));
+
+	if (!saveGame)
+		return returnData;
+
+	return saveGame->CharacterData;
+}
+
+void UDKBlueprintFunctionLibrary::SavePlayerTwo(const FDKCharacterData& DataIn)
+{
+	UDKPlayerSave* saveGame = Cast<UDKPlayerSave>(UGameplayStatics::LoadGameFromSlot(FSaveSlotNames::PlayerTwoSlot.SlotName,
+		FSaveSlotNames::PlayerTwoSlot.UserIndex));
+	if (saveGame)
+	{
+		saveGame->CharacterData = DataIn;
+
+		UGameplayStatics::SaveGameToSlot(saveGame, FSaveSlotNames::PlayerTwoSlot.SlotName,
+			FSaveSlotNames::PlayerTwoSlot.UserIndex);
+	}
+	else
+	{
+		UDKPlayerSave* newSaveGame = Cast<UDKPlayerSave>(UGameplayStatics::CreateSaveGameObject(UDKPlayerSave::StaticClass()));
+		newSaveGame->CharacterData = DataIn;
+
+		UGameplayStatics::SaveGameToSlot(newSaveGame, FSaveSlotNames::PlayerTwoSlot.SlotName,
+			FSaveSlotNames::PlayerTwoSlot.UserIndex);
+	}
+}
+
+
+FDKCharacterData UDKBlueprintFunctionLibrary::LoadPlayerTwo()
+{
+	FDKCharacterData returnData;
+	UDKPlayerSave* saveGame = Cast<UDKPlayerSave>(UGameplayStatics::LoadGameFromSlot(FSaveSlotNames::PlayerTwoSlot.SlotName,
+		FSaveSlotNames::PlayerTwoSlot.UserIndex));
+
+	if (!saveGame)
+		return returnData;
+
+	return saveGame->CharacterData;
 }

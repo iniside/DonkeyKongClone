@@ -33,6 +33,33 @@ public:
 	}
 };
 
+USTRUCT(BlueprintType)
+struct DONKEYKONG_API FDKCharacterData
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	/* Current lifes of player. */
+	UPROPERTY(BlueprintReadOnly)
+		int32 CurrentLifes;
+
+	/* Current score achieved by player */
+	UPROPERTY(BlueprintReadOnly)
+		int32 CurrentScore;
+
+	/* Last level reaced by player. Player will be respawned on this level. */
+	UPROPERTY(BlueprintReadOnly)
+		FName CurrentLevel;
+
+	FDKCharacterData()
+	{};
+
+	FDKCharacterData(int32 CurrentLifesIn, int32 CurrentScoreIn, FName CurrentLevelIn)
+		: CurrentLifes(CurrentLifesIn),
+		CurrentScore(CurrentScoreIn),
+		CurrentLevel(CurrentLevelIn)
+	{};
+};
+
 struct FSaveSlot
 {
 public:
@@ -60,4 +87,8 @@ struct FSaveSlotNames
 	GENERATED_USTRUCT_BODY()
 public:
 	static const FSaveSlot LadderBoardSlot;
+
+	static const FSaveSlot PlayerOneSlot;
+
+	static const FSaveSlot PlayerTwoSlot;
 };

@@ -23,6 +23,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Base")
 	class UDKGameInstance* GameInstance;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Base")
+	class ADKPlayerState* DKPlayerState;
+
 public:
 	ADKPlayerController(const FObjectInitializer& ObjectInitializer);
 
@@ -42,6 +45,9 @@ public:
 	virtual void SetupInputComponent() override;
 	/* APlayerController Overried - BEGIN **/
 	
+	/* Called when player died, to save current state of current player. */
+	void PlayerDied();
+
 	/*
 		Respawn player.
 		If in two player mode, it will alternate between player 1 and 2.
@@ -65,5 +71,15 @@ public:
 
 	/* Called when player is killed, and start spectating map. */
 	UFUNCTION(BlueprintImplementableEvent)
+		void OnCharacterRespawned();
+
+	/* Called when player is killed, and start spectating map. */
+	UFUNCTION(BlueprintImplementableEvent)
 		void OnGameOver();
+
+protected:
+	/* Loades character data from save to PlayerState after respawn. */
+	void LoadCharacterData();
+	/* Save character data for current player. */
+	void SaveCharacterData();
 };

@@ -147,6 +147,7 @@ void ADonkeyKongCharacter::CharacterDied()
 	GameInstance->SubtractPlayerLife();
 
 	GameMode->PlayerDied(this);
+	DKPC->PlayerDied();
 	DKPC->Spectate();
 
 	Destroy();

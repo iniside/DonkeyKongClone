@@ -15,21 +15,6 @@ protected:
 	/* Kills Barrels, that touch this volume. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Triggers")
 	class UBoxComponent* KillBarrelVolume;
-	
-public:	
-	// Sets default values for this actor's properties
-	ADKBarrelSpawner();
-	/** AActor Overrides - BEGIN */
-	
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	
-	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
-
-	virtual void OnConstruction(const FTransform& Transform) override;
-
-	virtual void Reset() override;
 
 	/* AActor Overrides - END **/
 protected:
@@ -57,6 +42,22 @@ protected:
 		FVector KillBarrelVolumeLocation;
 private:
 	FTimerHandle BarrelSpawnedTimerHandle;
+
+public:
+	// Sets default values for this actor's properties
+	ADKBarrelSpawner();
+	/** AActor Overrides - BEGIN */
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	// Called every frame
+	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void OnConstruction(const FTransform& Transform) override;
+
+	virtual void Reset() override;
+
 protected:
 	UFUNCTION()
 		void SpawnNewBarrel();

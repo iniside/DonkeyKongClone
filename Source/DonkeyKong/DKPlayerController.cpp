@@ -4,7 +4,9 @@
 #include "DonkeyKongGameMode.h"
 #include "DonkeyKongCharacter.h"
 #include "DKGameInstance.h"
-
+#include "DKPlayerState.h"
+#include "DKGlobalTypes.h"
+#include "DKBlueprintFunctionLibrary.h"
 #include "LevelSupport/DKLevelMaster.h"
 
 #include "DKPlayerController.h"
@@ -18,7 +20,7 @@ ADKPlayerController::ADKPlayerController(const FObjectInitializer& ObjectInitial
 void ADKPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	for (auto It = TActorIterator<ADKLevelMaster>(GetWorld()); It; ++It)
 	{
 		MasterLevel = *It;
@@ -26,6 +28,9 @@ void ADKPlayerController::BeginPlay()
 	}
 	GameInstance = Cast<UDKGameInstance>(GetGameInstance());
 	DKGameMode = Cast<ADonkeyKongGameMode>(UGameplayStatics::GetGameMode(this));
+
+	DKPlayerState = Cast<ADKPlayerState>(PlayerState);
+
 	MasterLevel->OnCharacterRespawned.Broadcast(this);
 }
 
@@ -39,44 +44,50 @@ void ADKPlayerController::AddScore(const FVector& TargetLocationIn, int32 ScoreI
 {
 	OnScoreAdded(TargetLocationIn, ScoreIn);
 
-	GameInstance->AddScore(ScoreIn);
+	DKPlayerState->AddScore(ScoreIn);
+	//GameInstance->AddScore(ScoreIn);
+	
+}
+
+void ADKPlayerController::PlayerDied()
+{
+	DKPlayerState->RemoveOneLife();
+	//DKPlayerState->SetCurrentLevel()
+	SaveCharacterData();
 }
 
 void ADKPlayerController::Respawn()
 {
-	if (GameInstance->GetPlayerLifes(GameInstance->CurrentPlayerIndex) <= 0)
-	{
-		OnPlayerNoLifes();
-		return;
-	}
-	//ASpectatorPawn* Spectator = Cast<ASpectatorPawn>(GetPawn());
-	//UnPossess();
-	//if (Spectator)
-	//{
-	//	Spectator->Destroy();
-	//}
-	//ADonkeyKongCharacter* Char = Cast<ADonkeyKongCharacter>(GetPawn());
-	//if (!Char)
-	//{
-	//	AActor* PlayerStart = DKGameMode->FindPlayerStart(this);
-	//	if (!PlayerStart)
-	//		return;
-	//	FActorSpawnParameters SpawnParams;
-	//	SpawnParams.bNoCollisionFail = true;
-	//	
-	//	ADonkeyKongCharacter* NewChar = GetWorld()->SpawnActor<ADonkeyKongCharacter>(DKGameMode->DefaultPawnClass,
-	//		PlayerStart->GetActorLocation(), FRotator(0, 0, 0), SpawnParams);
-	//	Possess(NewChar);
-	//	MasterLevel->OnCharacterRespawned.Broadcast(this);
-	//}
-
 	
-	DKGameMode->RestartGame();
+
+	if (DKPlayerState->GetCurrentLifes() > 0)
+	{
+		ADonkeyKongCharacter* Char = Cast<ADonkeyKongCharacter>(GetPawn());
+		if (!Char)
+		{
+			AActor* PlayerStart = DKGameMode->FindPlayerStart(this);
+			if (!PlayerStart)
+				return;
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.bNoCollisionFail = true;
+
+			ADonkeyKongCharacter* NewChar = GetWorld()->SpawnActor<ADonkeyKongCharacter>(DKGameMode->DefaultPawnClass,
+				PlayerStart->GetActorLocation(), FRotator(0, 0, 0), SpawnParams);
+			Possess(NewChar);
+
+
+			OnCharacterRespawned();
+			DKGameMode->ResetLevel();
+			MasterLevel->OnCharacterRespawned.Broadcast(this);
+		}
+	}
+	//DKGameMode->RestartGame();
 }
 void ADKPlayerController::Spectate()
 {
 	//if there is more than player we will alter between them.
 	//and do it in advance, so we can have data available in spectator mode.
+	//hacky FIX IT!.
 	if (GameInstance->PlayerNumber > 1)
 	{
 		if (GameInstance->CurrentPlayerIndex == 0)
@@ -84,10 +95,11 @@ void ADKPlayerController::Spectate()
 		else
 			GameInstance->CurrentPlayerIndex = 0;
 	}
+	LoadCharacterData();
+
 	if (GameInstance->AreAnyLifesRemaining())
 	{
 		OnStartSpectate();
-		DKGameMode->ResetLevel();
 	}
 	else
 	{
@@ -104,4 +116,29 @@ void ADKPlayerController::Spectate()
 void ADKPlayerController::QuitCurrentGame()
 {
 	GameInstance->ResetCurrentGame();
+}
+
+void ADKPlayerController::LoadCharacterData()
+{
+	if (GameInstance->CurrentPlayerIndex == 0)
+	{
+		FDKCharacterData data = UDKBlueprintFunctionLibrary::LoadPlayerOne();
+		DKPlayerState->LoadStateFromSave(data);
+	}
+	else if (GameInstance->CurrentPlayerIndex == 1)
+	{
+
+	}
+}
+
+void ADKPlayerController::SaveCharacterData()
+{
+	if (GameInstance->CurrentPlayerIndex == 0)
+	{
+		UDKBlueprintFunctionLibrary::SavePlayerOne(DKPlayerState->GetCurrentCharacterData());
+	}
+	else if (GameInstance->CurrentPlayerIndex == 1)
+	{
+
+	}
 }

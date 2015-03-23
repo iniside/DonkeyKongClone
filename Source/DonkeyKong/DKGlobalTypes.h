@@ -2,14 +2,14 @@
 #pragma once
 #include "DKGlobalTypes.generated.h"
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct DONKEYKONG_API FDKScoreLadder
 {
 	GENERATED_USTRUCT_BODY()
 public:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 		FString PlayerName;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 		int32 PlayerScore;
 
 	FDKScoreLadder()
@@ -21,11 +21,11 @@ public:
 
 	inline bool operator<(const FDKScoreLadder& Other) const
 	{
-		return PlayerScore < Other.PlayerScore;
+		return Other.PlayerScore < PlayerScore;
 	}
 	inline bool operator>(const FDKScoreLadder& Other) const
 	{
-		return PlayerScore > Other.PlayerScore;
+		return Other.PlayerScore > PlayerScore;
 	}
 	inline bool operator==(const FDKScoreLadder& Other) const
 	{

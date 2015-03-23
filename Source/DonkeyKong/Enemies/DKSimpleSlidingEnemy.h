@@ -5,7 +5,11 @@
 #include "GameFramework/Actor.h"
 #include "DKEnemy.h"
 #include "DKSimpleSlidingEnemy.generated.h"
-
+/*
+	Very simple sliding enemy. Does't have any AI, just slide in one direction until end of platform
+	or until trap. In case of trap, enemy fall to it and is destroyed, in case of level and enemy will just
+	start moving in opposite direction.
+*/
 UCLASS()
 class DONKEYKONG_API ADKSimpleSlidingEnemy : public ADKEnemy
 {

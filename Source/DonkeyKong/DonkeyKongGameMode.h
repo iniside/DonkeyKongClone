@@ -64,6 +64,8 @@ public:
 
 	void GameOver();
 
+	inline int32 GetLevelScore() { return BaseLevelScore; }
+
 private:
 	/* Subtracts bonus score, over period of time. */
 	UFUNCTION()

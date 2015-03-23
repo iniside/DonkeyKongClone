@@ -77,7 +77,4 @@ protected:
 		void AutoAttack();
 
 	void StopWeapon();
-	UFUNCTION()
-	void Collision_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };

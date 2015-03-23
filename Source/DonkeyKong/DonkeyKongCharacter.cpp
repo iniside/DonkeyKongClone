@@ -99,8 +99,9 @@ void ADonkeyKongCharacter::Climb(float Value)
 	{
 		FVector Move = ClimbDirection * Value;
 		AddActorLocalOffset(Move);
+		UnEquipWeapon();
 	}
-	UnEquipWeapon();
+	
 }
 
 // Input
@@ -166,6 +167,7 @@ void ADonkeyKongCharacter::EquipWeapon(class ADKWeapon* WeaponIn)
 		EquipedWeapon = WeaponIn;
 	}
 	EquipedWeapon->AttachRootComponentTo(WeaponAttachPoint, NAME_None, EAttachLocation::SnapToTarget);
+	EquipedWeapon->ActivateWeapon(this);
 }
 
 void ADonkeyKongCharacter::UnEquipWeapon()

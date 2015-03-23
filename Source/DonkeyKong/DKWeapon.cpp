@@ -21,8 +21,6 @@ ADKWeapon::ADKWeapon()
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->AttachTo(RootComponent);
-
-	Collision->OnComponentBeginOverlap.AddDynamic(this, &ADKWeapon::Collision_BeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -87,14 +85,4 @@ void ADKWeapon::StopWeapon()
 	GetWorldTimerManager().ClearTimer(AttackIntervalTimerHandle);
 
 	DKOwner->UnEquipWeapon();
-}
-
-void ADKWeapon::Collision_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (ADonkeyKongCharacter* MyChar = Cast<ADonkeyKongCharacter>(OtherActor))
-	{
-		MyChar->EquipWeapon(this);
-		ActivateWeapon(MyChar);
-	}
 }

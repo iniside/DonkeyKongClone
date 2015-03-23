@@ -45,6 +45,7 @@ protected:
 protected:
 	/** AActor overrides BEIGN */
 	virtual void BeginPlay() override;
+	virtual void Destroy() override;
 	/* AActor overrides END **/
 	
 	/** Called for side to side input */

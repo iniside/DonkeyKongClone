@@ -26,6 +26,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
 		int32 ScoreForJumping;
 
+	/* Score awarded when this enemy have been killed. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
+		int32 ScoreForKilling;
 public:
 	// Sets default values for this actor's properties
 	ADKEnemy();
@@ -44,6 +47,8 @@ public:
 
 	/* Call when enemy should stop climbing and leave ladder. */
 	virtual void ClimbStop() {};
+	/* Kill enemy. */
+	virtual void Kill(class ADKPlayerController* WhoKilled) {};
 
 	inline float GetChanceToClimb() { return ChanceToClimb; }
 

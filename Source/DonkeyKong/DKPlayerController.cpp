@@ -35,11 +35,11 @@ void ADKPlayerController::SetupInputComponent()
 	InputComponent->BindAction("RespawnPlayer", IE_Pressed, this, &ADKPlayerController::Respawn);
 }
 
-void ADKPlayerController::AddScore(int32 PlayerIndex, const FVector& TargetLocationIn, int32 ScoreIn)
+void ADKPlayerController::AddScore(const FVector& TargetLocationIn, int32 ScoreIn)
 {
-	OnScoreAdded(PlayerIndex, TargetLocationIn, ScoreIn);
+	OnScoreAdded(TargetLocationIn, ScoreIn);
 
-	GameInstance->AddScore(GameInstance->CurrentPlayerIndex, ScoreIn);
+	GameInstance->AddScore(ScoreIn);
 }
 
 void ADKPlayerController::Respawn()

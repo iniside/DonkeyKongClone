@@ -9,6 +9,8 @@
 #include "LevelSupport/DKLevelMaster.h"
 #include "Enemies/DKEnemy.h"
 
+#include "DKWeapon.h"
+
 #include "DonkeyKongCharacter.h"
 
 ADonkeyKongCharacter::ADonkeyKongCharacter(const FObjectInitializer& ObjectInitializer)
@@ -42,6 +44,8 @@ ADonkeyKongCharacter::ADonkeyKongCharacter(const FObjectInitializer& ObjectIniti
 	EnemyDetection->AttachTo(RootComponent);
 	EnemyDetection->OnComponentBeginOverlap.AddDynamic(this, &ADonkeyKongCharacter::EnemyDetection_BeginOverlap);
 
+	WeaponAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("WeaponAttachPoint"));
+	WeaponAttachPoint->AttachTo(RootComponent);
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ADonkeyKongCharacter::Capsule_BeginOverlap);
 }
@@ -96,6 +100,7 @@ void ADonkeyKongCharacter::Climb(float Value)
 		FVector Move = ClimbDirection * Value;
 		AddActorLocalOffset(Move);
 	}
+	UnEquipWeapon();
 }
 
 // Input
@@ -124,7 +129,7 @@ void ADonkeyKongCharacter::EnemyDetection_BeginOverlap(class AActor* OtherActor,
 		if (Enemy == LastEnemy)
 			return;
 		LastEnemy = Enemy;
-		DKPC->AddScore(GameInstance->CurrentPlayerIndex, Enemy->GetActorLocation(), Enemy->GetScoreForJumping());
+		DKPC->AddScore(Enemy->GetActorLocation(), Enemy->GetScoreForJumping());
 	}
 }
 
@@ -139,10 +144,43 @@ void ADonkeyKongCharacter::Capsule_BeginOverlap(class AActor* OtherActor, class 
 
 void ADonkeyKongCharacter::CharacterDied()
 {
-	GameInstance->SubtractPlayerLife(GameInstance->CurrentPlayerIndex);
+	GameInstance->SubtractPlayerLife();
 
 	GameMode->PlayerDied(this);
 	DKPC->Spectate();
 
 	Destroy();
+}
+
+
+void ADonkeyKongCharacter::EquipWeapon(class ADKWeapon* WeaponIn)
+{
+	if (EquipedWeapon)
+	{
+		UnEquipWeapon();
+		EquipedWeapon = WeaponIn;
+	}
+	else
+	{
+		EquipedWeapon = WeaponIn;
+	}
+	EquipedWeapon->AttachRootComponentTo(WeaponAttachPoint, NAME_None, EAttachLocation::SnapToTarget);
+}
+
+void ADonkeyKongCharacter::UnEquipWeapon()
+{
+	if (EquipedWeapon)
+		EquipedWeapon->Destroy();
+}
+
+bool ADonkeyKongCharacter::HaveWeapon()
+{
+	if (EquipedWeapon)
+	{
+		return true;
+	}
+	else
+	{
+		return false;	
+	}
 }

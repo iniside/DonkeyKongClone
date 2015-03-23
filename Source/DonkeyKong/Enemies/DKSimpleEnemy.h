@@ -64,4 +64,7 @@ public:
 
 	/* Call to tell enemy, to stop climbing */
 	virtual void ClimbStop() override;
+
+	/* Kill enemy. */
+	virtual void Kill(class ADKPlayerController* WhoKilled) override;
 };

@@ -7,10 +7,13 @@ UCLASS(config=Game)
 class ADonkeyKongCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
+protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* EnemyDetection;
 
+	/* Component to which Equiped weapon will be attached. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon")
+		USceneComponent* WeaponAttachPoint;
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Move State")
 		bool bIsClimbing;
@@ -35,6 +38,9 @@ protected:
 
 	UPROPERTY()
 	class ADKEnemy* LastEnemy;
+
+	UPROPERTY()
+	class ADKWeapon* EquipedWeapon;
 
 protected:
 	/** AActor overrides BEIGN */
@@ -76,4 +82,12 @@ public:
 	void CharacterDied();
 	/* Get current climbing direction on ladder */
 	inline float GetClimbingDirection() { return ClimbingDirection; };
+	
+	/* Equip Weapon */
+	void EquipWeapon(class ADKWeapon* WeaponIn);
+
+	/* Unequip current weapon. */
+	void UnEquipWeapon();
+
+	bool HaveWeapon();
 };

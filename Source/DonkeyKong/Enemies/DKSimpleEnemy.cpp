@@ -2,6 +2,8 @@
 
 #include "../DonkeyKong.h"
 #include "../LevelSupport/DKLadder.h"
+#include "../DKGameInstance.h"
+#include "../DKPlayerController.h"
 #include "DKSimpleEnemy.h"
 
 
@@ -113,7 +115,7 @@ bool ADKSimpleEnemy::FindPointToMove(FHitResult& HitOut)
 	FHitResult Hit;
 
 	FVector StartTrace = GetActorLocation() + SearchDirection*SearchDistance;
-	FVector EndTrace = (FVector(0, 0, -1) * 150) + StartTrace;
+	FVector EndTrace = (FVector(0, 0, -1) * 300) + StartTrace;
 	//keep searching until we will find valid point.
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
@@ -132,7 +134,7 @@ bool ADKSimpleEnemy::FindPointToMove(FHitResult& HitOut)
 			CurrentMoveDireaction = SearchDirection.Y;
 			float SearchDistance = FMath::FRandRange(MinSearchDistance, MaxSearchDistance);//randomly pick distance.
 			StartTrace = GetActorLocation() + SearchDirection*SearchDistance;
-			EndTrace = (FVector(0, 0, -1) * 150) + StartTrace;
+			EndTrace = (FVector(0, 0, -1) * 700) + StartTrace;
 		}
 	}
 	//ok we found floor.
@@ -154,4 +156,10 @@ void ADKSimpleEnemy::ClimbDown()
 void ADKSimpleEnemy::ClimbStop()
 {
 	bIsClimbing = false;
+}
+
+void ADKSimpleEnemy::Kill(class ADKPlayerController* WhoKilled)
+{
+	WhoKilled->AddScore(GetActorLocation() +FVector(0,0,150), ScoreForKilling);
+	Destroy();
 }

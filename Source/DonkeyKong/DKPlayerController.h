@@ -32,11 +32,11 @@ public:
 
 	/* Add score to player per level and per session. */
 	UFUNCTION(BlueprintCallable, Category = "Score")
-		virtual void AddScore(int32 PlayerIndex, const FVector& TargetLocationIn, int32 ScoreIn);
+		virtual void AddScore(const FVector& TargetLocationIn, int32 ScoreIn);
 	
 	/* Called when score is added to player. */
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Score")
-		void OnScoreAdded(int32 PlayerIndex, const FVector& TargetLocation, int32 Score);
+		void OnScoreAdded(const FVector& TargetLocation, int32 Score);
 
 	/** APlayerController Overried - BEGIN */
 	virtual void SetupInputComponent() override;

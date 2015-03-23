@@ -2,7 +2,7 @@
 
 #include "DonkeyKong.h"
 
-#include "DKGlobalTypes.h"
+
 #include "DKSaveGame.h"
 
 #include "DKBlueprintFunctionLibrary.h"
@@ -39,8 +39,19 @@ void UDKBlueprintFunctionLibrary::SaveNewScoreToLadder(const FString& PlayerName
 			FSaveSlotNames::LadderBoardSlot.UserIndex);
 	}
 }
-void UDKBlueprintFunctionLibrary::LoadNewScoreToLadder(const FString& PlayerName, int32 Score)
+void UDKBlueprintFunctionLibrary::LoadScoreFromLadder()
 {
+
+}
+TArray<FDKScoreLadder> UDKBlueprintFunctionLibrary::LoadFullLadderBoard()
+{
+	TArray<FDKScoreLadder> returnVal;
+
 	UDKSaveGame* saveGame = Cast<UDKSaveGame>(UGameplayStatics::LoadGameFromSlot(FSaveSlotNames::LadderBoardSlot.SlotName,
 		FSaveSlotNames::LadderBoardSlot.UserIndex));
+	
+	if (!saveGame)
+		return returnVal;
+	saveGame->LadderScore.Sort();
+	return saveGame->LadderScore;
 }

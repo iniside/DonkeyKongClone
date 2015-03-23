@@ -44,7 +44,7 @@ void ADKPickup::Collision_BeginOverlap(class AActor* OtherActor, class UPrimitiv
 	if (ADonkeyKongCharacter* MyChar = Cast<ADonkeyKongCharacter>(OtherActor))
 	{
 		UDKGameInstance* GI = Cast<UDKGameInstance>(GetGameInstance());
-		MyChar->GetDKPC()->AddScore(GI->CurrentPlayerIndex, GetActorLocation(), ScoreAwarded);
+		MyChar->GetDKPC()->AddScore(GetActorLocation(), ScoreAwarded);
 
 		Destroy();
 	}

@@ -69,15 +69,15 @@ public:
 	/* UGameInstance overrides - END **/
 	
 	/* Adds score to current player. */
-	void AddScore(int32 PlayerIndex, int32 ScoreIn);
+	void AddScore(int32 ScoreIn);
 	
 	/* 
 		Subtracts one life, from current player. 
 		return true if any lifes remain.
 	*/
-	void SubtractPlayerLife(int32 PlayerIndex);
+	void SubtractPlayerLife();
 
-	inline int32 GetPlayerLifes(int32 PlayerIndex) { return PlayerLifes[PlayerIndex]; }
+	inline int32 GetPlayerLifes(int32 PlayerIndex) { return PlayerLifes[CurrentPlayerIndex]; }
 	
 	/* Resets game instance to default values */
 	void ResetCurrentGame();

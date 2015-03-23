@@ -26,12 +26,12 @@ void UDKGameInstance::Init()
 
 }
 
-void UDKGameInstance::AddScore(int32 PlayerIndex, int32 ScoreIn)
+void UDKGameInstance::AddScore(int32 ScoreIn)
 {
 	TotalGameScore[CurrentPlayerIndex] += ScoreIn;
 }
 
-void UDKGameInstance::SubtractPlayerLife(int32 PlayerIndex)
+void UDKGameInstance::SubtractPlayerLife()
 {
 	PlayerLifes[CurrentPlayerIndex] -= 1;
 }

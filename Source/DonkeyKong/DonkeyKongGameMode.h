@@ -67,6 +67,9 @@ public:
 
 	inline int32 GetLevelScore() { return BaseLevelScore; }
 
+	UFUNCTION(BlueprintImplementableEvent)
+		void OnGameOver();
+
 private:
 	/* Subtracts bonus score, over period of time. */
 	UFUNCTION()

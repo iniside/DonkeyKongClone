@@ -53,8 +53,6 @@ void ADonkeyKongGameMode::Restart()
 	FTimerDelegate del = FTimerDelegate::CreateUObject(this, &ADonkeyKongGameMode::SubtractScore);
 	GetWorldTimerManager().SetTimer(ScoreSubtractionTimeHandle, del, HowOftenSubtractScore,
 		true, HowOftenSubtractScore);
-	//GameInstance->ResetCurrentGame();
-	//UGameplayStatics::OpenLevel(this, FirstLevelName);
 }
 
 void ADonkeyKongGameMode::GotoNextLevel(FName NextLevelName)
@@ -76,6 +74,7 @@ void ADonkeyKongGameMode::GameOver()
 	{
 		It->Reset();
 	}
+	OnGameOver();
 }
 
 void ADonkeyKongGameMode::SubtractScore()

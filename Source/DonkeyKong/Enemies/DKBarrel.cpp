@@ -2,6 +2,7 @@
 
 #include "../DonkeyKong.h"
 #include "../LevelSupport/DKLadder.h"
+#include "../DKPlayerController.h"
 #include "DKBarrel.h"
 
 
@@ -103,4 +104,9 @@ void ADKBarrel::ClimbDown()
 void ADKBarrel::ClimbStop()
 {
 	bMovingOnLadder = false;
+}
+void ADKBarrel::Kill(class ADKPlayerController* WhoKilled)
+{
+	WhoKilled->AddScore(GetActorLocation(), ScoreForKilling);
+	Destroy();
 }

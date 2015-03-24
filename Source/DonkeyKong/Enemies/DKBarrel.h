@@ -51,6 +51,9 @@ public:
 	virtual void ClimbDown() override;
 
 	virtual void ClimbStop() override;
+
+	/* Kill enemy. */
+	virtual void Kill(class ADKPlayerController* WhoKilled) override;
 protected:
 	/* Looks for floor, to which barrel can stick. */
 	bool GetFloor(FHitResult& out);

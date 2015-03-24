@@ -13,7 +13,7 @@
 // Sets default values
 ADKLevelMaster::ADKLevelMaster()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
 
@@ -33,13 +33,13 @@ void ADKLevelMaster::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+
 }
 
 // Called every frame
-void ADKLevelMaster::Tick( float DeltaTime )
+void ADKLevelMaster::Tick(float DeltaTime)
 {
-	Super::Tick( DeltaTime );
+	Super::Tick(DeltaTime);
 
 }
 
@@ -63,16 +63,17 @@ void ADKLevelMaster::CharacterRespawned(class ADKPlayerController* PCIn)
 	{
 		PCIn->SetViewTargetWithBlend(Camera);
 	}
+
+
 }
 
 void ADKLevelMaster::EndLevel()
 {
-	if (UDKGameInstance* GI = Cast<UDKGameInstance>(GetGameInstance()))
-	{
-		ADonkeyKongGameMode* GameMode = Cast<ADonkeyKongGameMode>(GetWorld()->GetAuthGameMode());
-		if (!GameMode)
-			return;
-		GI->AddScore(GameMode->GetLevelScore());
-		OnEndLevel();
-	}
+	ADonkeyKongGameMode* GameMode = Cast<ADonkeyKongGameMode>(GetWorld()->GetAuthGameMode());
+	if (!GameMode)
+		return;
+
+	GameMode->GotoNextLevel(NextLevelName);
+
+	OnEndLevel();
 }

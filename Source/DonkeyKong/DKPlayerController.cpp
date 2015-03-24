@@ -32,6 +32,8 @@ void ADKPlayerController::BeginPlay()
 	DKPlayerState = Cast<ADKPlayerState>(PlayerState);
 
 	MasterLevel->OnCharacterRespawned.Broadcast(this);
+
+	LoadCharacterData();
 }
 
 void ADKPlayerController::SetupInputComponent()
@@ -45,21 +47,19 @@ void ADKPlayerController::AddScore(const FVector& TargetLocationIn, int32 ScoreI
 	OnScoreAdded(TargetLocationIn, ScoreIn);
 
 	DKPlayerState->AddScore(ScoreIn);
-	//GameInstance->AddScore(ScoreIn);
-	
 }
 
 void ADKPlayerController::PlayerDied()
 {
 	DKPlayerState->RemoveOneLife();
-	//DKPlayerState->SetCurrentLevel()
+	DKPlayerState->SetCurrentLevel(*GetWorld()->GetMapName());
 	SaveCharacterData();
 }
 
 void ADKPlayerController::Respawn()
 {
-	
-
+	DKGameMode->ResetLevel();
+	DKGameMode->Restart();
 	if (DKPlayerState->GetCurrentLifes() > 0)
 	{
 		ADonkeyKongCharacter* Char = Cast<ADonkeyKongCharacter>(GetPawn());
@@ -77,11 +77,10 @@ void ADKPlayerController::Respawn()
 
 
 			OnCharacterRespawned();
-			DKGameMode->ResetLevel();
+			
 			MasterLevel->OnCharacterRespawned.Broadcast(this);
 		}
 	}
-	//DKGameMode->RestartGame();
 }
 void ADKPlayerController::Spectate()
 {
@@ -97,7 +96,7 @@ void ADKPlayerController::Spectate()
 	}
 	LoadCharacterData();
 
-	if (GameInstance->AreAnyLifesRemaining())
+	if (DKPlayerState->GetCurrentLifes() > 0)
 	{
 		OnStartSpectate();
 	}
@@ -115,7 +114,7 @@ void ADKPlayerController::Spectate()
 
 void ADKPlayerController::QuitCurrentGame()
 {
-	GameInstance->ResetCurrentGame();
+	
 }
 
 void ADKPlayerController::LoadCharacterData()
@@ -127,18 +126,19 @@ void ADKPlayerController::LoadCharacterData()
 	}
 	else if (GameInstance->CurrentPlayerIndex == 1)
 	{
-
+		FDKCharacterData data = UDKBlueprintFunctionLibrary::LoadPlayerTwo();
+		DKPlayerState->LoadStateFromSave(data);
 	}
 }
 
 void ADKPlayerController::SaveCharacterData()
 {
-	if (GameInstance->CurrentPlayerIndex == 0)
+   	if (GameInstance->CurrentPlayerIndex == 0)
 	{
 		UDKBlueprintFunctionLibrary::SavePlayerOne(DKPlayerState->GetCurrentCharacterData());
 	}
 	else if (GameInstance->CurrentPlayerIndex == 1)
 	{
-
+		UDKBlueprintFunctionLibrary::SavePlayerTwo(DKPlayerState->GetCurrentCharacterData());
 	}
 }

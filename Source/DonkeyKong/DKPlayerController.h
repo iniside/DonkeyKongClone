@@ -77,9 +77,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void OnGameOver();
 
-protected:
+public:
 	/* Loades character data from save to PlayerState after respawn. */
 	void LoadCharacterData();
+
 	/* Save character data for current player. */
 	void SaveCharacterData();
 };

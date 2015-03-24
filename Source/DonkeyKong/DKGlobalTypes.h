@@ -51,6 +51,8 @@ public:
 		FName CurrentLevel;
 
 	FDKCharacterData()
+		: CurrentLifes(0),
+		CurrentScore(0)
 	{};
 
 	FDKCharacterData(int32 CurrentLifesIn, int32 CurrentScoreIn, FName CurrentLevelIn)

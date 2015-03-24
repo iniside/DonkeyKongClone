@@ -27,6 +27,11 @@ protected:
 	/* Name of next level, player will travel to */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
 		FName NextLevelName;
+
+	/* Name of current level. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+		FName CurrentLevelName;
+
 	/* Location of trigger, which will finish current level. */
 	UPROPERTY(EditAnywhere, meta = (MakeEditWidget = "true"), Category = "Config")
 		FVector EndLevelTriggetLocation;
@@ -48,6 +53,8 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
+
+	inline FName GetCurrentLevelName() { return CurrentLevelName; }
 protected:
 	UFUNCTION()
 		void EndLevelTrigger_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,

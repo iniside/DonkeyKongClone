@@ -122,3 +122,15 @@ FDKCharacterData UDKBlueprintFunctionLibrary::LoadPlayerTwo()
 
 	return saveGame->CharacterData;
 }
+
+FDKCharacterData UDKBlueprintFunctionLibrary::LoadPlayerByIndex(int32 PlayerIndex)
+{
+	if (PlayerIndex == 0)
+	{
+		return LoadPlayerOne();
+	}
+	else
+	{
+		return LoadPlayerTwo();
+	}
+}

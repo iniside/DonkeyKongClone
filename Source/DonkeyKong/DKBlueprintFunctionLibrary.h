@@ -35,4 +35,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Donkey Kong | Save Game")
 		static FDKCharacterData LoadPlayerTwo();
+
+	UFUNCTION(BlueprintCallable, Category = "Donkey Kong | Save Game")
+		static FDKCharacterData LoadPlayerByIndex(int32 PlayerIndex);
 };

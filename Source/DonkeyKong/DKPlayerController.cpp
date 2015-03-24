@@ -52,7 +52,7 @@ void ADKPlayerController::AddScore(const FVector& TargetLocationIn, int32 ScoreI
 void ADKPlayerController::PlayerDied()
 {
 	DKPlayerState->RemoveOneLife();
-	DKPlayerState->SetCurrentLevel(*GetWorld()->GetMapName());
+	DKPlayerState->SetCurrentLevel(MasterLevel->GetCurrentLevelName());
 	SaveCharacterData();
 }
 
@@ -74,8 +74,6 @@ void ADKPlayerController::Respawn()
 			ADonkeyKongCharacter* NewChar = GetWorld()->SpawnActor<ADonkeyKongCharacter>(DKGameMode->DefaultPawnClass,
 				PlayerStart->GetActorLocation(), FRotator(0, 0, 0), SpawnParams);
 			Possess(NewChar);
-
-
 			OnCharacterRespawned();
 			
 			MasterLevel->OnCharacterRespawned.Broadcast(this);

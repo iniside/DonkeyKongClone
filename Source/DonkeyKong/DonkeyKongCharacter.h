@@ -36,17 +36,39 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Base")
 	class UDKGameInstance* GameInstance;
 
+	/* Last enemy, over which character jumped. To prevent scoring from the same evenmy over and over. */
 	UPROPERTY()
 	class ADKEnemy* LastEnemy;
 
+	/* Currently equiped weapon. */
 	UPROPERTY()
 	class ADKWeapon* EquipedWeapon;
 
+	/* Ladder character is currently climbing on. */
+	UPROPERTY()
+	class ADKLadder* CurrentLadder;
+
+	/* Ladder collision object type. */
+	UPROPERTY(EditAnywhere, Category = "Config")
+		TArray<TEnumAsByte<ECollisionChannel> > LadderToTrace;
+
+	FCollisionObjectQueryParams LadderPrams;
+
+	bool bHaveJumped;
+	bool bHaveClimbed;
+	FVector LastLocation;
 public:
 	ADonkeyKongCharacter(const FObjectInitializer& ObjectInitializer);
 	
 	/** AActor overrides BEIGN */
 	virtual void BeginPlay() override;
+	/* AActor overrides END **/
+
+	/** AActor overrides BEIGN */
+	/* Overrided to kill character when fallen from current platform. */
+	virtual void Landed(const FHitResult& Hit) override;
+
+	virtual void Falling() override;
 	/* AActor overrides END **/
 
 	/** UObject overrides BEIGN */
@@ -56,7 +78,7 @@ public:
 	inline class ADKPlayerController* GetDKPC() const { return DKPC; };
 
 	/* Called when character reached end of ladder. */
-	void ClimbFinish(const FVector& LeaveLedderLocation);
+	void ClimbFinish(const FVector& LeaveLedderLocation, class ADKLadder* Ladder);
 
 	/* Called when character died (obviously ?). */
 	void CharacterDied();
@@ -71,12 +93,18 @@ public:
 
 	/* Does character have weapon equiped ? */
 	bool HaveWeapon();
+	
+	/////////
+	///Input
 
 	/** Called for side to side input */
 	void MoveRight(float Val);
 
 	/* Called to climb over ladder */
 	void Climb(float Value);
+
+	/* Searches for ladder. */
+	void InputLookForLadder();
 
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;

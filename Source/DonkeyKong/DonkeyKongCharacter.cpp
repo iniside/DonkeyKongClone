@@ -7,6 +7,8 @@
 #include "DKGameInstance.h"
 
 #include "LevelSupport/DKLevelMaster.h"
+#include "LevelSupport/DKLadder.h"
+
 #include "Enemies/DKEnemy.h"
 
 #include "DKWeapon.h"
@@ -48,6 +50,9 @@ ADonkeyKongCharacter::ADonkeyKongCharacter(const FObjectInitializer& ObjectIniti
 	WeaponAttachPoint->AttachTo(RootComponent);
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ADonkeyKongCharacter::Capsule_BeginOverlap);
+
+	bHaveClimbed = false;
+	bHaveJumped = false;
 }
 
 void ADonkeyKongCharacter::BeginPlay()
@@ -59,12 +64,39 @@ void ADonkeyKongCharacter::BeginPlay()
 		MasterLevel = *It;
 		break;
 	}
-
+	for (auto Iter = LadderToTrace.CreateConstIterator(); Iter; ++Iter)
+	{
+		const ECollisionChannel & Channel = (*Iter);
+		if (FCollisionObjectQueryParams::IsValidObjectQuery(Channel))
+		{
+			LadderPrams.AddObjectTypesToQuery(Channel);
+		}
+	}
 
 	GameMode = Cast<ADonkeyKongGameMode>(GetWorld()->GetAuthGameMode());
 	GameInstance = Cast<UDKGameInstance>(GetGameInstance());
 }
 
+void ADonkeyKongCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+
+	FBox lastBox(LastLocation-100, LastLocation+100);
+	FBox currentBox(GetActorLocation() - 100, GetActorLocation() + 100);
+
+	if (currentBox.Intersect(lastBox))
+	{
+
+	}
+	else
+	{
+		CharacterDied();
+	}
+}
+void ADonkeyKongCharacter::Falling()
+{
+	LastLocation = GetActorLocation();
+}
 void ADonkeyKongCharacter::BeginDestroy()
 {
 	if (EquipedWeapon)
@@ -87,6 +119,8 @@ void ADonkeyKongCharacter::SetupPlayerInputComponent(class UInputComponent* Inpu
 	// set up gameplay key bindings
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	InputComponent->BindAction("CheckForLadder", IE_Pressed, this, &ADonkeyKongCharacter::InputLookForLadder);
+
 	InputComponent->BindAxis("MoveRight", this, &ADonkeyKongCharacter::MoveRight);
 	InputComponent->BindAxis("Climb", this, &ADonkeyKongCharacter::Climb);
 }
@@ -112,15 +146,44 @@ void ADonkeyKongCharacter::Climb(float Value)
 	
 }
 
+void ADonkeyKongCharacter::InputLookForLadder()
+{
+	if (!bIsClimbing)
+	{
+		FVector StartTrace = GetActorLocation() + FVector(150, 0, 0);
+		FVector EndTrace = StartTrace + FVector(-1, 0, 0) * 100;
+
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this);
+		FHitResult hit;
+		GetWorld()->LineTraceSingle(hit, StartTrace, EndTrace, Params, LadderPrams);
+
+		if (hit.Actor.IsValid())
+		{
+			if (ADKLadder* Ladder = Cast<ADKLadder>(hit.Actor.Get()))
+			{
+				SetActorLocation(hit.Location);
+				bIsClimbing = true;
+				GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+				CurrentLadder = Ladder;
+			}
+		}
+	}
+}
+
 // Input
 //////////////////////////////////////////////////////////////////////////
 
 
-void ADonkeyKongCharacter::ClimbFinish(const FVector& LeaveLedderLocation)
+void ADonkeyKongCharacter::ClimbFinish(const FVector& LeaveLedderLocation, class ADKLadder* Ladder)
 {
-	TeleportTo(LeaveLedderLocation, FRotator(0, 0, 0));
-	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
-	bIsClimbing = false;
+	if (Ladder == CurrentLadder)
+	{
+		TeleportTo(LeaveLedderLocation, FRotator(0, 0, 0));
+		GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+		bIsClimbing = false;
+		bHaveClimbed = true;
+	}
 }
 
 void ADonkeyKongCharacter::EnemyDetection_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,

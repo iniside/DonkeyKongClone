@@ -28,24 +28,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Config")
 		FName StartingLevel;
 
-	/* Current count of players lifes. */
-	UPROPERTY(BlueprintReadWrite, Category = "Player")
-		TArray<int32> PlayerLifes;
-
-	/* Level which player reached */
-	UPROPERTY(BlueprintReadWrite, Category = "Player")
-		TArray<FName> CurrentLevel;
-
 	////////////////////////
 	////Score
 
 	/* Current Highest score. */
 	UPROPERTY(BlueprintReadOnly, Category = "Score")
 		int32 HighestScore;
-	
-	/* Total Score Accumulated during game duration. */
-	UPROPERTY(BlueprintReadWrite, Category = "Score")
-		TArray<int32> TotalGameScore;
+
 	
 	////Score
 	////////////////////////
@@ -67,23 +56,6 @@ public:
 	/** UGameInstance overrides - BEGIN */
 	virtual void Init() override;
 	/* UGameInstance overrides - END **/
-	
-	/* Adds score to current player. */
-	void AddScore(int32 ScoreIn);
-	
-	/* 
-		Subtracts one life, from current player. 
-		return true if any lifes remain.
-	*/
-	void SubtractPlayerLife();
-
-	inline int32 GetPlayerLifes(int32 PlayerIndex) { return PlayerLifes[CurrentPlayerIndex]; }
-	
-	/* Resets game instance to default values */
-	void ResetCurrentGame();
-
-	/* Checks if any player have any lifes remaining */
-	bool AreAnyLifesRemaining();
 
 	/* Starts game with only one player */
 	UFUNCTION(BlueprintCallable, Category = "Player")

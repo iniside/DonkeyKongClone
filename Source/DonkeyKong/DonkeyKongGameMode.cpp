@@ -18,6 +18,8 @@ ADonkeyKongGameMode::ADonkeyKongGameMode(const FObjectInitializer& ObjectInitial
 	BaseLevelScore = 5000;
 	HowOftenSubtractScore = 1.55;
 	SubtractionAmount = 100;
+
+	CurrentScore = BaseLevelScore;
 }
 
 void ADonkeyKongGameMode::BeginPlay()
@@ -45,8 +47,27 @@ void ADonkeyKongGameMode::PlayerDied(class ADonkeyKongCharacter* CharacterIn)
 
 void ADonkeyKongGameMode::Restart()
 {
-	GameInstance->ResetCurrentGame();
-	UGameplayStatics::OpenLevel(this, FirstLevelName);
+	CurrentScore = BaseLevelScore;
+
+	GetWorldTimerManager().ClearTimer(ScoreSubtractionTimeHandle);
+	FTimerDelegate del = FTimerDelegate::CreateUObject(this, &ADonkeyKongGameMode::SubtractScore);
+	GetWorldTimerManager().SetTimer(ScoreSubtractionTimeHandle, del, HowOftenSubtractScore,
+		true, HowOftenSubtractScore);
+	//GameInstance->ResetCurrentGame();
+	//UGameplayStatics::OpenLevel(this, FirstLevelName);
+}
+
+void ADonkeyKongGameMode::GotoNextLevel(FName NextLevelName)
+{
+	for (APlayerState* ps : GameState->PlayerArray)
+	{
+		if (ADKPlayerController* adkpc = Cast<ADKPlayerController>(ps->GetOwner()))
+		{
+			adkpc->SaveCharacterData();
+		}
+	}
+
+	UGameplayStatics::OpenLevel(GetWorld(), NextLevelName);
 }
 
 void ADonkeyKongGameMode::GameOver()
@@ -59,10 +80,10 @@ void ADonkeyKongGameMode::GameOver()
 
 void ADonkeyKongGameMode::SubtractScore()
 {
-	BaseLevelScore = BaseLevelScore - SubtractionAmount;
-	if (BaseLevelScore <= 0)
+	CurrentScore = CurrentScore - SubtractionAmount;
+	if (CurrentScore <= 0)
 	{
 		GetWorldTimerManager().ClearTimer(ScoreSubtractionTimeHandle);
-		BaseLevelScore = 0;
+		CurrentScore = 0;
 	}
 }

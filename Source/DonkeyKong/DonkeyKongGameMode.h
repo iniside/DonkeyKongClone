@@ -9,12 +9,6 @@ UCLASS(minimalapi)
 class ADonkeyKongGameMode : public AGameMode
 {
 	GENERATED_BODY()
-
-public:
-	ADonkeyKongGameMode(const FObjectInitializer& ObjectInitializer);
-
-	virtual void BeginPlay() override;
-
 protected:
 	/*
 		This level will be opened when player press Restart Button.
@@ -29,7 +23,7 @@ protected:
 	class UDKGameInstance* GameInstance;
 
 	/* Base score for level, it's subtracted over time. */
-	UPROPERTY(BlueprintReadOnly, Category = "Score")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
 		int32 BaseLevelScore;
 
 	/* Time in seconds, between score subtraction. */
@@ -39,6 +33,9 @@ protected:
 	/* How much score will be subtracted on each period. */
 	UPROPERTY(EditAnywhere, Category = "Score")
 		int32 SubtractionAmount;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Score")
+		int32 CurrentScore;
 
 private:
 	FTimerHandle ScoreSubtractionTimeHandle;
@@ -50,7 +47,9 @@ public:
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Donkey Kong|Game Mode")
 		FDKOnPlayerDeath OnPlayerDeath;
 public:
+	ADonkeyKongGameMode(const FObjectInitializer& ObjectInitializer);
 
+	virtual void BeginPlay() override;
 	/* Called when played die. */
 	void PlayerDied(class ADonkeyKongCharacter* CharacterIn);
 	
@@ -60,7 +59,9 @@ public:
 	
 	/* Restart game and move to first level */
 	UFUNCTION(BlueprintCallable, Category = "Donkey Kong | Player")
-		void Restart();
+		virtual void Restart();
+
+	void GotoNextLevel(FName NextLevelName);
 
 	void GameOver();
 

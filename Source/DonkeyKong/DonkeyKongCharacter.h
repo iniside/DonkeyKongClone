@@ -42,12 +42,36 @@ protected:
 	UPROPERTY()
 	class ADKWeapon* EquipedWeapon;
 
-protected:
+public:
+	ADonkeyKongCharacter(const FObjectInitializer& ObjectInitializer);
+	
 	/** AActor overrides BEIGN */
 	virtual void BeginPlay() override;
-	virtual void Destroy() override;
 	/* AActor overrides END **/
-	
+
+	/** UObject overrides BEIGN */
+	virtual void BeginDestroy() override;
+	/* UObject overrides END **/
+
+	inline class ADKPlayerController* GetDKPC() const { return DKPC; };
+
+	/* Called when character reached end of ladder. */
+	void ClimbFinish(const FVector& LeaveLedderLocation);
+
+	/* Called when character died (obviously ?). */
+	void CharacterDied();
+	/* Get current climbing direction on ladder */
+	inline float GetClimbingDirection() { return ClimbingDirection; };
+
+	/* Equip Weapon */
+	void EquipWeapon(class ADKWeapon* WeaponIn);
+
+	/* Unequip current weapon. */
+	void UnEquipWeapon();
+
+	/* Does character have weapon equiped ? */
+	bool HaveWeapon();
+
 	/** Called for side to side input */
 	void MoveRight(float Val);
 
@@ -58,7 +82,7 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	virtual void PossessedBy(AController* NewController) override;
 	// End of APawn interface
-
+protected:
 	/* Triggered when we jump over any object derived from ADKEnemy class. */
 	UFUNCTION()
 	void EnemyDetection_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
@@ -71,24 +95,5 @@ protected:
 	UFUNCTION()
 		void Capsule_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-public:
-	ADonkeyKongCharacter(const FObjectInitializer& ObjectInitializer);
 
-	inline class ADKPlayerController* GetDKPC() const { return DKPC; };
-	
-	/* Called when character reached end of ladder. */
-	void ClimbFinish(const FVector& LeaveLedderLocation);
-
-	/* Called when character died (obviously ?). */
-	void CharacterDied();
-	/* Get current climbing direction on ladder */
-	inline float GetClimbingDirection() { return ClimbingDirection; };
-	
-	/* Equip Weapon */
-	void EquipWeapon(class ADKWeapon* WeaponIn);
-
-	/* Unequip current weapon. */
-	void UnEquipWeapon();
-
-	bool HaveWeapon();
 };

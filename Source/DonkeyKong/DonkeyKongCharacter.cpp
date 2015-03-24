@@ -65,6 +65,14 @@ void ADonkeyKongCharacter::BeginPlay()
 	GameInstance = Cast<UDKGameInstance>(GetGameInstance());
 }
 
+void ADonkeyKongCharacter::BeginDestroy()
+{
+	if (EquipedWeapon)
+	{
+		EquipedWeapon->Destroy();
+	}
+	Super::BeginDestroy();
+}
 void ADonkeyKongCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -145,8 +153,6 @@ void ADonkeyKongCharacter::Capsule_BeginOverlap(class AActor* OtherActor, class 
 
 void ADonkeyKongCharacter::CharacterDied()
 {
-	GameInstance->SubtractPlayerLife();
-
 	GameMode->PlayerDied(this);
 	DKPC->PlayerDied();
 	DKPC->Spectate();

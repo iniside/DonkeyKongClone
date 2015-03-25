@@ -80,8 +80,11 @@ void ADonkeyKongCharacter::BeginPlay()
 void ADonkeyKongCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
-
+	//make box at last location
+	//in case of falling, in location where pawn last standed.
+	//in case of jumping it will be at about jump apex.
 	FBox lastBox(LastLocation-100, LastLocation+100);
+	//and box at location where pawn landed.
 	FBox currentBox(GetActorLocation() - 100, GetActorLocation() + 100);
 
 	if (currentBox.Intersect(lastBox))

@@ -65,9 +65,11 @@ public:
 	/* AActor overrides END **/
 
 	/** AActor overrides BEIGN */
+	
 	/* Overrided to kill character when fallen from current platform. */
 	virtual void Landed(const FHitResult& Hit) override;
-
+	
+	/* Called when character started falling. */
 	virtual void Falling() override;
 	/* AActor overrides END **/
 
@@ -82,6 +84,7 @@ public:
 
 	/* Called when character died (obviously ?). */
 	void CharacterDied();
+
 	/* Get current climbing direction on ladder */
 	inline float GetClimbingDirection() { return ClimbingDirection; };
 
@@ -110,6 +113,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	virtual void PossessedBy(AController* NewController) override;
 	// End of APawn interface
+
 protected:
 	/* Triggered when we jump over any object derived from ADKEnemy class. */
 	UFUNCTION()

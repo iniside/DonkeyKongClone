@@ -39,7 +39,10 @@ private:
 	float ClimbingDirection;
 	/* Am I currently climbing ? */
 	bool bIsClimbing;
-	
+	/* Ladder this actor is currently climbing on. */
+	UPROPERTY()
+	class ADKLadder* CurrentLadder;
+
 public:
 	// Sets default values for this actor's properties
 	ADKSimpleEnemy();
@@ -57,13 +60,13 @@ public:
 	bool FindPointToMove(FHitResult& HitOut);
 
 	/* Call to tell enemy to climb up */
-	virtual void ClimbUp() override;
+	virtual void ClimbUp(class ADKLadder* LadderIn) override;
 
 	/* Call to tell enemey to climb down */
-	virtual void ClimbDown() override;
+	virtual void ClimbDown(class ADKLadder* LadderIn) override;
 
 	/* Call to tell enemy, to stop climbing */
-	virtual void ClimbStop() override;
+	virtual void ClimbStop(class ADKLadder* LadderIn) override;
 
 	/* Kill enemy. */
 	virtual void Kill(class ADKPlayerController* WhoKilled) override;

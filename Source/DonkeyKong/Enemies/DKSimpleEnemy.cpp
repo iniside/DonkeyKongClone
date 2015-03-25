@@ -4,6 +4,9 @@
 #include "../LevelSupport/DKLadder.h"
 #include "../DKGameInstance.h"
 #include "../DKPlayerController.h"
+
+#include "../LevelSupport/DKLadder.h"
+
 #include "DKSimpleEnemy.h"
 
 
@@ -143,19 +146,22 @@ bool ADKSimpleEnemy::FindPointToMove(FHitResult& HitOut)
 	return SearchResult;
 }
 
-void ADKSimpleEnemy::ClimbUp()
+void ADKSimpleEnemy::ClimbUp(class ADKLadder* LadderIn)
 {
+	CurrentLadder = LadderIn;
 	bIsClimbing = true;
 	ClimbingDirection = 1;
 }
-void ADKSimpleEnemy::ClimbDown()
+void ADKSimpleEnemy::ClimbDown(class ADKLadder* LadderIn)
 {
+	CurrentLadder = LadderIn;
 	bIsClimbing = true;
 	ClimbingDirection = -1;
 }
-void ADKSimpleEnemy::ClimbStop()
+void ADKSimpleEnemy::ClimbStop(class ADKLadder* LadderIn)
 {
-	bIsClimbing = false;
+	if (LadderIn == CurrentLadder)
+		bIsClimbing = false;
 }
 
 void ADKSimpleEnemy::Kill(class ADKPlayerController* WhoKilled)

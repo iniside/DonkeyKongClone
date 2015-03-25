@@ -39,5 +39,8 @@ void ADKFallingPlatform::Reset()
 
 void ADKFallingPlatform::PlatformFall()
 {
+	AddActorLocalOffset(FallLocation);
+	//SetActorEnableCollision(false);
+	//SetActorHiddenInGame(true)
 	OnPlatformFall();
 }

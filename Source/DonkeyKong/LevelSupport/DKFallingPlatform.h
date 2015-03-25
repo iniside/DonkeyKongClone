@@ -19,6 +19,8 @@ protected:
 
 protected:
 	FVector LastLocation;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(MakeEditWidget = "true"), Category = "Config ")
+		FVector FallLocation;
 public:	
 	// Sets default values for this actor's properties
 	ADKFallingPlatform();

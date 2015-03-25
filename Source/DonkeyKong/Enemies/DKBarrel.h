@@ -48,9 +48,9 @@ public:
 	
 	inline void SetMovingOnLadder(bool ValueIn) { bMovingOnLadder = ValueIn; };
 
-	virtual void ClimbDown() override;
+	virtual void ClimbDown(class ADKLadder* LadderIn) override;
 
-	virtual void ClimbStop() override;
+	virtual void ClimbStop(class ADKLadder* LadderIn) override;
 
 	/* Kill enemy. */
 	virtual void Kill(class ADKPlayerController* WhoKilled) override;

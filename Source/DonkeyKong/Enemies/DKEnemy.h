@@ -40,13 +40,13 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	/* Call to tell enemy to climb up */
-	virtual void ClimbUp() {};
+	virtual void ClimbUp(class ADKLadder* LadderIn) {};
 
 	/* Call to tell enemey to climb down */
-	virtual void ClimbDown() {};
+	virtual void ClimbDown(class ADKLadder* LadderIn) {};
 
 	/* Call when enemy should stop climbing and leave ladder. */
-	virtual void ClimbStop() {};
+	virtual void ClimbStop(class ADKLadder* LadderIn) {};
 	/* Kill enemy. */
 	virtual void Kill(class ADKPlayerController* WhoKilled) {};
 

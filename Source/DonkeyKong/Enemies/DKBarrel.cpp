@@ -96,12 +96,12 @@ bool ADKBarrel::GetFloor(FHitResult& out)
 	return hit;
 }
 
-void ADKBarrel::ClimbDown()
+void ADKBarrel::ClimbDown(class ADKLadder* LadderIn)
 {
 	bMovingOnLadder = true;
 }
 
-void ADKBarrel::ClimbStop()
+void ADKBarrel::ClimbStop(class ADKLadder* LadderIn)
 {
 	bMovingOnLadder = false;
 }

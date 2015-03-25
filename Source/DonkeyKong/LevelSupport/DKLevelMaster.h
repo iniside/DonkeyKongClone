@@ -54,6 +54,8 @@ public:
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 
+	inline FName GetNextLevelName() { return NextLevelName; }
+
 	inline FName GetCurrentLevelName() { return CurrentLevelName; }
 protected:
 	UFUNCTION()

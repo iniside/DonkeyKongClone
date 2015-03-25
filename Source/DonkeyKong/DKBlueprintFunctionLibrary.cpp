@@ -39,10 +39,7 @@ void UDKBlueprintFunctionLibrary::SaveNewScoreToLadder(const FString& PlayerName
 			FSaveSlotNames::LadderBoardSlot.UserIndex);
 	}
 }
-void UDKBlueprintFunctionLibrary::LoadScoreFromLadder()
-{
 
-}
 TArray<FDKScoreLadder> UDKBlueprintFunctionLibrary::LoadFullLadderBoard()
 {
 	TArray<FDKScoreLadder> returnVal;

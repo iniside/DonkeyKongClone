@@ -59,6 +59,8 @@ public:
 	/* searches random point in front or back of enemy to move to. */
 	bool FindPointToMove(FHitResult& HitOut);
 
+	/** ADKEnemy overrides - BEGIN */
+
 	/* Call to tell enemy to climb up */
 	virtual void ClimbUp(class ADKLadder* LadderIn) override;
 
@@ -67,6 +69,8 @@ public:
 
 	/* Call to tell enemy, to stop climbing */
 	virtual void ClimbStop(class ADKLadder* LadderIn) override;
+
+	/* ADKEnemy overrides - END **/
 
 	/* Kill enemy. */
 	virtual void Kill(class ADKPlayerController* WhoKilled) override;

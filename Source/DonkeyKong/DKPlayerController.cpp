@@ -33,6 +33,8 @@ void ADKPlayerController::BeginPlay()
 
 	MasterLevel->OnCharacterRespawned.Broadcast(this);
 
+	DKPlayerState->SetCurrentLevel(MasterLevel->GetCurrentLevelName());
+
 	LoadCharacterData();
 }
 
@@ -77,6 +79,7 @@ void ADKPlayerController::Respawn()
 			AActor* PlayerStart = DKGameMode->FindPlayerStart(this);
 			if (!PlayerStart)
 				return;
+
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.bNoCollisionFail = true;
 
@@ -132,6 +135,7 @@ void ADKPlayerController::Spectate()
 		DKGameMode->GameOver();
 		OnGameOver();
 	}
+
 	ASpectatorPawn* spectate = GetWorld()->SpawnActor<ASpectatorPawn>(GetWorld()->GetAuthGameMode()->SpectatorClass);
 	UnPossess();
 	Possess(spectate);

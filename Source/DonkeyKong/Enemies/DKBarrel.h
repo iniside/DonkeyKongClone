@@ -47,11 +47,13 @@ public:
 	/* Get chance (0-1), in which barrel will move down on barrel. */
 	
 	inline void SetMovingOnLadder(bool ValueIn) { bMovingOnLadder = ValueIn; };
-
+	
+	/** ADKEnemy overrides - BEGIN */
 	virtual void ClimbDown(class ADKLadder* LadderIn) override;
 
 	virtual void ClimbStop(class ADKLadder* LadderIn) override;
-
+	/* ADKEnemy overrides - END **/
+	
 	/* Kill enemy. */
 	virtual void Kill(class ADKPlayerController* WhoKilled) override;
 protected:

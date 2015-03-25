@@ -5,6 +5,10 @@
 #include "LevelSupport/DKFallingPlatform.h"
 #include "LevelSupport/DKPlatformHolder.h"
 
+#include "DKGameInstance.h"
+#include "DKPlayerController.h"
+#include "DKGlobalTypes.h"
+
 #include "DKBossLevelGameMode.h"
 
 
@@ -47,6 +51,13 @@ void ADKBossLevelGameMode::FinishLevel()
 	for (ADKFallingPlatform* fallPlat : FallingPlatforms)
 	{
 		fallPlat->PlatformFall();
+	}
+	for (APlayerState* ps : GameState->PlayerArray)
+	{
+		if (ADKPlayerController* adkpc = Cast<ADKPlayerController>(ps->GetOwner()))
+		{
+			adkpc->FinishGame();
+		}
 	}
 }
 

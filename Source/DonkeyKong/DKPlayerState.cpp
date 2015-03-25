@@ -16,10 +16,11 @@ void ADKPlayerState::LoadStateFromSave(const FDKCharacterData& DataIn)
 	CurrentLifes = DataIn.CurrentLifes;
 	CurrentScore = DataIn.CurrentScore;
 	CurrentLevel = DataIn.CurrentLevel;
+	bFinishedGame = DataIn.bFinishedGame;
 }
 
 FDKCharacterData ADKPlayerState::GetCurrentCharacterData()
 {
-	FDKCharacterData DataOut(CurrentLifes, CurrentScore, CurrentLevel);
+	FDKCharacterData DataOut(CurrentLifes, CurrentScore, CurrentLevel, bFinishedGame);
 	return DataOut;
 }

@@ -22,6 +22,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Info")
 		FName CurrentLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player Info")
+		bool bFinishedGame;
 public:
 	ADKPlayerState(const FObjectInitializer& ObjectInitializer);
 	
@@ -36,6 +39,15 @@ public:
 	
 	/* Get current lifes of this player. */
 	inline int32 GetCurrentLifes() { return CurrentLifes; };
+
+	/* Get curent level of this player. */
+	inline FName GetCurrentLevel() { return CurrentLevel; };
+
+	/* Set bFinishedGame */
+	inline void SetFinishedGame(bool ValueIn) { bFinishedGame = ValueIn; };
+
+	/*Get bFinishedGame */
+	inline bool GetFinishedGame() { return bFinishedGame; };
 
 	/* Loads PlayerState properties from Save file. */
 	void LoadStateFromSave(const FDKCharacterData& DataIn);

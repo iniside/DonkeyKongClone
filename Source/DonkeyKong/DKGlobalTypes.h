@@ -49,16 +49,28 @@ public:
 	/* Last level reaced by player. Player will be respawned on this level. */
 	UPROPERTY(BlueprintReadOnly)
 		FName CurrentLevel;
+	/* Did player finished game ? */
+	UPROPERTY(BlueprintReadOnly)
+		bool bFinishedGame;
 
 	FDKCharacterData()
 		: CurrentLifes(0),
-		CurrentScore(0)
+		CurrentScore(0),
+		bFinishedGame(false)
 	{};
 
 	FDKCharacterData(int32 CurrentLifesIn, int32 CurrentScoreIn, FName CurrentLevelIn)
 		: CurrentLifes(CurrentLifesIn),
 		CurrentScore(CurrentScoreIn),
-		CurrentLevel(CurrentLevelIn)
+		CurrentLevel(CurrentLevelIn),
+		bFinishedGame(false)
+	{};
+
+	FDKCharacterData(int32 CurrentLifesIn, int32 CurrentScoreIn, FName CurrentLevelIn, bool bFinishedGameIn)
+		: CurrentLifes(CurrentLifesIn),
+		CurrentScore(CurrentScoreIn),
+		CurrentLevel(CurrentLevelIn),
+		bFinishedGame(bFinishedGameIn)
 	{};
 };
 

@@ -10,6 +10,7 @@ ADKMovingTrack::ADKMovingTrack()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
 	RootComponent = SceneRoot;
 
@@ -32,6 +33,15 @@ void ADKMovingTrack::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
+	for (ADonkeyKongCharacter* MyChar : AffectedCharacters)
+	{
+		if (MyChar)
+		{
+			FVector DeltaMove = FVector(0, Direction, 0)*Magnitude * DeltaTime;
+			MyChar->AddActorWorldOffset(DeltaMove);
+			//MyChar->GetCharacterMovement()->MoveSmooth(FVector(0, Direction, 0)*Magnitude, DeltaTime);
+		}
+	}
 }
 
 void ADKMovingTrack::TrackVolume_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
@@ -48,5 +58,6 @@ void ADKMovingTrack::TrackVolume_EndOverlap(class AActor* OtherActor, class UPri
 	if (ADonkeyKongCharacter* MyChar = Cast<ADonkeyKongCharacter>(OtherActor))
 	{
 		AffectedCharacters.RemoveSwap(MyChar);
+		AffectedCharacters.Shrink();
 	}
 }

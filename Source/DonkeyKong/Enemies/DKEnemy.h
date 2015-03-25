@@ -47,6 +47,7 @@ public:
 
 	/* Call when enemy should stop climbing and leave ladder. */
 	virtual void ClimbStop(class ADKLadder* LadderIn) {};
+
 	/* Kill enemy. */
 	virtual void Kill(class ADKPlayerController* WhoKilled) {};
 

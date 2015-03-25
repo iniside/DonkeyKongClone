@@ -63,7 +63,7 @@ public:
 	void RespawnOnDifferentLevel();
 
 	/* Finish game, for one player. */
-	void FinishGame();
+	void FinishGame(int32 ScoreIn);
 
 	/* Quits current game. All progress will be lost! */
 	UFUNCTION(BlueprintCallable, Category = "DonkeyKong|Game")

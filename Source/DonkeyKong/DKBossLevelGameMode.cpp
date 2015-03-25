@@ -56,7 +56,7 @@ void ADKBossLevelGameMode::FinishLevel()
 	{
 		if (ADKPlayerController* adkpc = Cast<ADKPlayerController>(ps->GetOwner()))
 		{
-			adkpc->FinishGame();
+			adkpc->FinishGame(CurrentScore);
 		}
 	}
 }

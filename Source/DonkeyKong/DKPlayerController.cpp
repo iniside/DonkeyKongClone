@@ -70,6 +70,7 @@ void ADKPlayerController::Respawn()
 				if (!(MasterLevel->GetCurrentLevelName() == DKPlayerState->GetCurrentLevel()))
 				{
 					RespawnOnDifferentLevel();
+					return;
 				}
 			}
 			
@@ -145,8 +146,9 @@ void ADKPlayerController::MoveToNextLevel(int32 BonusScore)
 	SaveCharacterData();
 }
 
-void ADKPlayerController::FinishGame()
+void ADKPlayerController::FinishGame(int32 ScoreIn)
 {
+	DKPlayerState->AddScore(ScoreIn);
 	DKPlayerState->SetFinishedGame(true);
 	SaveCharacterData();
 	if (GameInstance->HaveTwoPlayers())

@@ -62,6 +62,7 @@ public:
 	
 	/** AActor overrides BEIGN */
 	virtual void BeginPlay() override;
+	virtual void Destroyed() override;
 	/* AActor overrides END **/
 
 	/** AActor overrides BEIGN */
@@ -72,10 +73,6 @@ public:
 	/* Called when character started falling. */
 	virtual void Falling() override;
 	/* AActor overrides END **/
-
-	/** UObject overrides BEIGN */
-	virtual void BeginDestroy() override;
-	/* UObject overrides END **/
 
 	inline class ADKPlayerController* GetDKPC() const { return DKPC; };
 

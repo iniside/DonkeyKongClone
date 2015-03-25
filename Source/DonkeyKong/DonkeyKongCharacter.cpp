@@ -100,13 +100,13 @@ void ADonkeyKongCharacter::Falling()
 {
 	LastLocation = GetActorLocation();
 }
-void ADonkeyKongCharacter::BeginDestroy()
+void ADonkeyKongCharacter::Destroyed()
 {
 	if (EquipedWeapon)
 	{
 		EquipedWeapon->Destroy();
 	}
-	Super::BeginDestroy();
+	Super::Destroyed();
 }
 void ADonkeyKongCharacter::PossessedBy(AController* NewController)
 {

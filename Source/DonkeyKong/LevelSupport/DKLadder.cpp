@@ -78,7 +78,7 @@ void ADKLadder::LadderEnd_OnBeginOverlap(class AActor* OtherActor, class UPrimit
 
 	if (ADKEnemy* Enemy = Cast<ADKEnemy>(OtherActor))
 	{
-		Enemy->ClimbStop();
+		Enemy->ClimbStop(this);
 	}
 }
 
@@ -96,7 +96,7 @@ void ADKLadder::LadderBegin_OnBeginOverlap(class AActor* OtherActor, class UPrim
 
 	if (ADKEnemy* Enemy = Cast<ADKEnemy>(OtherActor))
 	{
-		Enemy->ClimbStop();
+		Enemy->ClimbStop(this);
 	}
 }
 
@@ -110,7 +110,7 @@ void ADKLadder::EnemyClimbUpVolume_OnBeginOverlap(class AActor* OtherActor, clas
 		if (chance > test)
 			return;
 
-		Enemy->ClimbUp();
+		Enemy->ClimbUp(this);
 	}
 }
 
@@ -124,6 +124,6 @@ void ADKLadder::EnemyClimbDownVolume_OnBeginOverlap(class AActor* OtherActor, cl
 		if (chance > test)
 			return;
 
-		Enemy->ClimbDown();
+		Enemy->ClimbDown(this);
 	}
 }

@@ -67,4 +67,9 @@ public:
 
 	/* Called to create new game from either StartOnePlayer or StartTwoPlayers */
 	void CreateGame();
+
+	inline bool HaveTwoPlayers() { if (PlayerNumber > 1) return true; else return false; };
+
+	/* If there is more than one player, this function will swap between them. */
+	void SwapPlayers();
 };

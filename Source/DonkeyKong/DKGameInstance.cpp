@@ -48,3 +48,13 @@ void UDKGameInstance::CreateGame()
 	}
 }
 
+void UDKGameInstance::SwapPlayers()
+{
+	if (PlayerNumber > 1)
+	{
+		if (CurrentPlayerIndex == 0)
+			CurrentPlayerIndex = 1;
+		else
+			CurrentPlayerIndex = 0;
+	}
+}

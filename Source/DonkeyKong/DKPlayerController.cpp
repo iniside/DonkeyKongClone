@@ -65,6 +65,14 @@ void ADKPlayerController::Respawn()
 		ADonkeyKongCharacter* Char = Cast<ADonkeyKongCharacter>(GetPawn());
 		if (!Char)
 		{
+			if (GameInstance->PlayerNumber > 1)
+			{
+				if (!(MasterLevel->GetCurrentLevelName() == DKPlayerState->GetCurrentLevel()))
+				{
+					RespawnOnDifferentLevel();
+				}
+			}
+			
 			AActor* PlayerStart = DKGameMode->FindPlayerStart(this);
 			if (!PlayerStart)
 				return;
@@ -80,21 +88,41 @@ void ADKPlayerController::Respawn()
 		}
 	}
 }
+
+void ADKPlayerController::RespawnOnDifferentLevel()
+{
+	UGameplayStatics::OpenLevel(GetWorld(), DKPlayerState->GetCurrentLevel());
+}
+
 void ADKPlayerController::Spectate()
 {
 	//if there is more than player we will alter between them.
 	//and do it in advance, so we can have data available in spectator mode.
-	//hacky FIX IT!.
-	if (GameInstance->PlayerNumber > 1)
-	{
-		if (GameInstance->CurrentPlayerIndex == 0)
-			GameInstance->CurrentPlayerIndex = 1;
-		else
-			GameInstance->CurrentPlayerIndex = 0;
-	}
+	SwapPlayers();
+
 	LoadCharacterData();
 
-	if (DKPlayerState->GetCurrentLifes() > 0)
+	//check if player finished game.
+ 	if (DKPlayerState->GetFinishedGame())
+	{
+		//if true, we will iterate over all players to find the one which does not finished game
+		//or until we run out of players.
+		int32 CurrentChecks = 0;
+		while (CurrentChecks < GameInstance->PlayerNumber)
+		{
+			SwapPlayers();
+			LoadCharacterData();
+			if (!DKPlayerState->GetFinishedGame())
+				break;
+			CurrentChecks++;
+		}
+	}
+	if (DKPlayerState->GetFinishedGame() )
+	{
+		DKGameMode->GameOver();
+		OnGameOver();
+	}
+	else if (DKPlayerState->GetCurrentLifes() > 0)
 	{
 		OnStartSpectate();
 	}
@@ -108,6 +136,29 @@ void ADKPlayerController::Spectate()
 	Possess(spectate);
 
 	MasterLevel->OnCharacterRespawned.Broadcast(this);
+}
+
+void ADKPlayerController::MoveToNextLevel(int32 BonusScore)
+{
+	DKPlayerState->AddScore(BonusScore);
+	DKPlayerState->SetCurrentLevel(MasterLevel->GetNextLevelName());
+	SaveCharacterData();
+}
+
+void ADKPlayerController::FinishGame()
+{
+	DKPlayerState->SetFinishedGame(true);
+	SaveCharacterData();
+	if (GameInstance->HaveTwoPlayers())
+	{
+		//else move to another player.
+		Spectate();
+	}
+	else
+	{
+		//if there is only one player, just finish game.
+		OnGameOver();
+	}
 }
 
 void ADKPlayerController::QuitCurrentGame()
@@ -139,4 +190,9 @@ void ADKPlayerController::SaveCharacterData()
 	{
 		UDKBlueprintFunctionLibrary::SavePlayerTwo(DKPlayerState->GetCurrentCharacterData());
 	}
+}
+
+void ADKPlayerController::SwapPlayers()
+{
+	GameInstance->SwapPlayers();
 }

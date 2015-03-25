@@ -57,6 +57,14 @@ public:
 	/* Start spectating map, after player have been killed. */
 	void Spectate();
 	
+	void MoveToNextLevel(int32 BonusScore);
+
+	/* If current level does not match player level, we will need to load proper level and respawn here. */
+	void RespawnOnDifferentLevel();
+
+	/* Finish game, for one player. */
+	void FinishGame();
+
 	/* Quits current game. All progress will be lost! */
 	UFUNCTION(BlueprintCallable, Category = "DonkeyKong|Game")
 		void QuitCurrentGame();
@@ -83,4 +91,7 @@ public:
 
 	/* Save character data for current player. */
 	void SaveCharacterData();
+
+	/* Swap players */
+	void SwapPlayers();
 };

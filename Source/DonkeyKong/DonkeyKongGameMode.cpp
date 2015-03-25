@@ -61,7 +61,7 @@ void ADonkeyKongGameMode::GotoNextLevel(FName NextLevelName)
 	{
 		if (ADKPlayerController* adkpc = Cast<ADKPlayerController>(ps->GetOwner()))
 		{
-			adkpc->SaveCharacterData();
+			adkpc->MoveToNextLevel(CurrentScore);
 		}
 	}
 

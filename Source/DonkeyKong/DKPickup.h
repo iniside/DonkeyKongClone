@@ -25,6 +25,7 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
+	virtual void Reset() override;
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
 		int32 ScoreAwarded;

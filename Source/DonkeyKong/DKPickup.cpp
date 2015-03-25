@@ -38,6 +38,12 @@ void ADKPickup::Tick( float DeltaTime )
 
 }
 
+void ADKPickup::Reset()
+{
+	SetActorEnableCollision(true);
+	SetActorHiddenInGame(false);
+}
+
 void ADKPickup::Collision_BeginOverlap(class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -46,6 +52,7 @@ void ADKPickup::Collision_BeginOverlap(class AActor* OtherActor, class UPrimitiv
 		UDKGameInstance* GI = Cast<UDKGameInstance>(GetGameInstance());
 		MyChar->GetDKPC()->AddScore(GetActorLocation(), ScoreAwarded);
 
-		Destroy();
+		SetActorEnableCollision(false);
+		SetActorHiddenInGame(true);
 	}
 }

@@ -24,7 +24,9 @@ void UDKGameInstance::Init()
 	{
 		StartOnePlayer();
 	}
-
+	FDKCharacterData PlayerStartData(StartingLifes, 0, StartingLevel);
+	UDKBlueprintFunctionLibrary::SavePlayerOne(PlayerStartData);
+	UDKBlueprintFunctionLibrary::SavePlayerTwo(PlayerStartData);
 }
 
 void UDKGameInstance::StartOnePlayer()
